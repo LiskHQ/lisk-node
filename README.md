@@ -44,27 +44,20 @@ cd lisk-node
 
 ### Docker
 
-- Ensure you have an Ethereum L1 full node RPC available (not Lisk), and copy `.env.*` (based on the network) to `.env` setting `OP_NODE_L1_ETH_RPC`. If running your own L1 node, it needs to be synced before the specific Lisk network will be able to fully sync. You also need a Beacon API RPC which can be set in `OP_NODE_L1_BEACON`. Example:
+1. Ensure you have an Ethereum L1 full node RPC available (not Lisk), and set `OP_NODE_L1_ETH_RPC` (in the `.env.*` file if using docker-compose). If running your own L1 node, it needs to be synced before Lisk will be able to fully sync.
+2. Uncomment the line relevant to your network (`.env.sepolia`, or `.env.mainnet`) under the 2 `env_file` keys in `docker-compose.yml`.
+3. Run:
 
-  ```
-  # .env file
-  # [recommended] replace with your preferred L1 (Ethereum, not Lisk) node RPC URL:
-  OP_NODE_L1_ETH_RPC=<L1 api rpc>
-  OP_NODE_L1_BEACON=<beacon api rpc>
-  ```
+```
+docker compose up --build
+```
 
-- Start the node:
+4. You should now be able to `curl` your Lisk node:
 
-  ```
-  docker compose up --build
-  ```
-
-- You should now be able to `curl` your Lisk node:
-
-  ```
-  curl -d '{"id":0,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest",false]}' \
-    -H "Content-Type: application/json" http://localhost:8545
-  ```
+```
+curl -d '{"id":0,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest",false]}' \
+  -H "Content-Type: application/json" http://localhost:8545
+```
 
 ### Source
 
