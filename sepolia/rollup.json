@@ -1,30 +1,35 @@
 {
-  "genesis": {
-    "l1": {
-      "hash": "0xcac9a83291d4dec146d6f7f69ab2304f23f5be87b1789119a0c5b1e4482444ed",
-      "number": 4370868
+    "genesis": {
+      "l1": {
+        "hash": "0x7d9d6dcec39efe182119f41b1bd2aa7b35b82e43927522afea86d210a4eace4b",
+        "number": 5089851
+      },
+      "l2": {
+        "hash": "0xead3e6ddd08ae7e27fd952b74ceb468ba889047ac96b351dd13bd55e5faf3372",
+        "number": 0
+      },
+      "l2_time": 1705312992,
+      "system_config": {
+        "scalar": "0x00000000000000000000000000000000000000000000000000000000000f4240",
+        "gasLimit": 30000000,
+        "overhead": "0x0000000000000000000000000000000000000000000000000000000000000834",
+        "batcherAddr": "0x246e119a5bcc2875161b23e4e602e25cece96e37",
+        "basefeeScalar": 0,
+        "blobBasefeeScalar": 0
+      }
     },
-    "l2": {
-      "hash": "0x0dcc9e089e30b90ddfc55be9a37dd15bc551aeee999d2e2b51414c54eaf934e4",
-      "number": 0
-    },
-    "l2_time": 1695768288,
-    "system_config": {
-      "batcherAddr": "0x6cdebe940bc0f26850285caca097c11c33103e47",
-      "overhead": "0x0000000000000000000000000000000000000000000000000000000000000834",
-      "scalar": "0x00000000000000000000000000000000000000000000000000000000000f4240",
-      "gasLimit": 25000000
-    }
-  },
-  "block_time": 2,
-  "max_sequencer_drift": 600,
-  "seq_window_size": 3600,
-  "channel_timeout": 300,
-  "l1_chain_id": 11155111,
-  "l2_chain_id": 84532,
-  "regolith_time": 0,
-  "batch_inbox_address": "0xff00000000000000000000000000000000084532",
-  "deposit_contract_address": "0x49f53e41452c74589e85ca1677426ba426459e85",
-  "l1_system_config_address": "0xf272670eb55e895584501d564afeb048bed26194",
-  "protocol_versions_address": "0x0000000000000000000000000000000000000000"
-}
+    "block_time": 2,
+    "delta_time": 0,
+    "canyon_time": 0,
+    "l1_chain_id": 11155111,
+    "l2_chain_id": 4202,
+    "ecotone_time": 1708534800,
+    "regolith_time": 0,
+    "channel_timeout": 300,
+    "seq_window_size": 3600,
+    "batch_inbox_address": "0xff00000000000000000000000000000000004202",
+    "max_sequencer_drift": 600,
+    "deposit_contract_address": "0xe3d90f21490686ec7ef37be788e02dfc12787264",
+    "l1_system_config_address": "0xf54791059df4a12ba461b881b4080ae81a1d0ac0",
+    "protocol_versions_address": "0x0000000000000000000000000000000000000000"
+  }

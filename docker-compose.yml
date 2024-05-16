@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  geth: # this is Optimism's geth client
+  op-geth: # this is Optimism's geth client
     build: .
     ports:
       - 8545:8545       # RPC
@@ -13,10 +13,9 @@ services:
     volumes:
         - ${GETH_HOST_DATA_DIR}:/data
     env_file:
-      # select your network here:
-#      - .env.sepolia
-#      - .env.mainnet
-  node:
+        - .env    
+
+  lisk-node:
     build: .
     depends_on:
       - geth
@@ -28,6 +27,4 @@ services:
       - 6060:6060     # pprof
     command: [ "bash", "./op-node-entrypoint" ]
     env_file:
-      # select your network here:
-#      - .env.sepolia
-#      - .env.mainnet
+      - .env    
