@@ -1,13 +1,13 @@
-# Lisk
+# Lisk node
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 ![GitHub repo size](https://img.shields.io/github/repo-size/liskhq/lisk-node)
 ![GitHub issues](https://img.shields.io/github/issues-raw/liskhq/lisk-node)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/liskhq/lisk-node)
 
-Lisk provides a cost-efficient, fast, and scalable Layer 2 (L2) network based on [Optimism (OP)](https://stack.optimism.io/). that is secured by Ethereum.
+Lisk provides a cost-efficient, fast, and scalable Layer 2 (L2) network based on [Optimism (OP)](https://stack.optimism.io/) that is secured by Ethereum.
 
-This repository contains information on how to run your own L2 node on the Lisk network.
+This repository contains information on how to run your own node on the Lisk network.
 
 ## System requirements
 
@@ -16,7 +16,7 @@ The following system requirements are recommended to run Lisk L2 node.
 ### Memory
 
 - Modern multi-core CPU with good single-core performance
-- Machines with a minimum of 16 GB RAM (32 GB recommended).
+- Machines with a minimum of 16 GB RAM (32 GB recommended)
 
 ### Storage
 
@@ -24,16 +24,16 @@ The following system requirements are recommended to run Lisk L2 node.
 
 ## Supported networks
 
-| Ethereum Network | Status |
-| ---------------- | ------ |
-| Lisk             | ✅     |
-| Lisk Sepolia     | ✅     |
+| Network              | Status |
+| -------------------- | ------ |
+| Lisk Sepolia Testnet | ✅     |
+| Lisk Mainnet         | ✅     |
 
 ## Usage
 
 > **Note**:
 > <br>It is currently not possible to run the node until the configs for Lisk have been merged to the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
-> <br>We currently have an [open PR](https://github.com/ethereum-optimism/superchain-registry/pull/234) to add Lisk Mainnet config. We will soon create a PR to add the config for Lisk Sepolia Testnet as well.
+> <br>We currently have an [open PR](https://github.com/ethereum-optimism/superchain-registry/pull/234) to add the Lisk Mainnet config. We will soon create a PR to add the config for the Lisk Sepolia Testnet as well.
 
 ### Clone the Repository
 
@@ -63,7 +63,7 @@ curl -d '{"id":0,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["late
 
 #### Build
 
-To build `op-node` and `op-geth` from source, follow the optimism document [documentation](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source)
+To build `op-node` and `op-geth` from source, follow the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
 
 #### Set environment variables
 
@@ -77,7 +77,7 @@ export DATADIR_PATH=... # Path to the folder where geth data will be stored
 
 Navigate to your `op-geth` directory and start service by running the command:
 
-For Lisk Sepolia Testnet:
+For, Lisk Sepolia Testnet:
 
 ```sh
 ./build/bin/geth \
@@ -93,7 +93,7 @@ For Lisk Sepolia Testnet:
   --override.canyon=0
 ```
 
-For Lisk Mainnet:
+For, Lisk Mainnet:
 
 ```sh
 ./build/bin/geth \
@@ -112,7 +112,7 @@ Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/bu
 
 Navigate to your `op-node` directory and start service by running the command:
 
-For Lisk Sepolia Testnet:
+For, Lisk Sepolia Testnet:
 
 ```sh
 ./bin/op-node \
@@ -125,7 +125,7 @@ For Lisk Sepolia Testnet:
   --syncmode=execution-layer
 ```
 
-For Lisk Mainnet:
+For, Lisk Mainnet:
 
 ```sh
 ./bin/op-node \
@@ -144,7 +144,7 @@ Note: Some L1 nodes (e.g. Erigon) do not support fetching storage proofs. You ca
 
 ## Snapshots
 
-Not yet available.
+TBA
 
 ### Syncing
 
