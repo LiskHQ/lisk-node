@@ -38,8 +38,8 @@ if [ "${OP_GETH_BOOTNODES+x}" = x ]; then
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --bootnodes=$OP_GETH_BOOTNODES"
 fi
 
-if [ "${OP_GETH_CANYON+x}" = x ]; then
-    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.canyon=$OP_GETH_CANYON"
+if [ "${OP_NODE_OVERRIDE_CANYON+x}" = x ]; then
+    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.canyon=$OP_NODE_OVERRIDE_CANYON"
 fi
 
 exec ./geth \

@@ -73,6 +73,28 @@ Set the following environment variable:
 export DATADIR_PATH=... # Path to the folder where geth data will be stored
 ```
 
+#### Create a JWT Secret
+
+Run the following command to generate a random 32 byte hex string:
+
+```
+openssl rand -hex 32 > jwt.txt
+```
+
+For more information refer to the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/mainnet#create-a-jwt-secret).
+
+#### Initialize op-geth
+
+Navigate to your `op-geth` directory and init service by running the command:
+
+```sh
+./build/bin/geth init --datadir=$DATADIR_PATH PATH_TO_NETWORK_GENESIS_FILE
+```
+
+> **Note**:
+> <br>Alternatively, the above step can be skipped by specifying `--op-network=OP_NODE_NETWORK` flag in the start commands below.
+> <br>The flags fetches information from the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
+
 #### Run
 
 Navigate to your `op-geth` directory and start service by running the command:
@@ -81,31 +103,69 @@ For, Lisk Sepolia Testnet:
 
 ```sh
 ./build/bin/geth \
-  --http \
-  --http.port=8545 \
-  --http.addr=localhost \
-  --authrpc.addr=localhost \
-  --authrpc.jwtsecret=./jwt.txt \
-  --verbosity=3 \
-  --rollup.sequencerhttp=https://rpc.sepolia-api.lisk.com/ \
-  --op-network=lisk-sepolia \
-  --datadir=$DATADIR_PATH \
-  --override.canyon=0
+    --datadir=$DATADIR_PATH \
+    --verbosity=3 \
+    --http \
+    --http.corsdomain="*" \
+    --http.vhosts="*" \
+    --http.addr=0.0.0.0 \
+    --http.port=8545 \
+    --http.api=web3,debug,eth,net,engine \
+    --authrpc.addr=0.0.0.0 \
+    --authrpc.port=8551 \
+    --authrpc.vhosts="*" \
+    --authrpc.jwtsecret=./jwt.txt \
+    --ws \
+    --ws.addr=0.0.0.0 \
+    --ws.port=8546 \
+    --ws.origins="*" \
+    --ws.api=debug,eth,net,engine \
+    --metrics \
+    --metrics.addr=0.0.0.0 \
+    --metrics.port=606 \
+    --syncmode=full \
+    --gcmode=full \
+    --maxpeers=100 \
+    --nat=extip:0.0.0.0 \
+    --rollup.sequencerhttp=https://rpc.sepolia-api.lisk.com \
+    --rollup.halt=major \
+    --port=30303 \
+    --rollup.disabletxpoolgossip=true \
+    --override.canyon=0
 ```
 
 For, Lisk Mainnet:
 
 ```sh
 ./build/bin/geth \
-  --http \
-  --http.port=8545 \
-  --http.addr=localhost \
-  --authrpc.addr=localhost \
-  --authrpc.jwtsecret=./jwt.txt \
-  --verbosity=3 \
-  --rollup.sequencerhttp=https://rpc.api.lisk.com/ \
-  --op-network=lisk \
-  --datadir=$DATADIR_PATH
+    --datadir=$DATADIR_PATH \
+    --verbosity=3 \
+    --http \
+    --http.corsdomain="*" \
+    --http.vhosts="*" \
+    --http.addr=0.0.0.0 \
+    --http.port=8545 \
+    --http.api=web3,debug,eth,net,engine \
+    --authrpc.addr=0.0.0.0 \
+    --authrpc.port=8551 \
+    --authrpc.vhosts="*" \
+    --authrpc.jwtsecret=./jwt.txt \
+    --ws \
+    --ws.addr=0.0.0.0 \
+    --ws.port=8546 \
+    --ws.origins="*" \
+    --ws.api=debug,eth,net,engine \
+    --metrics \
+    --metrics.addr=0.0.0.0 \
+    --metrics.port=606 \
+    --syncmode=full \
+    --gcmode=full \
+    --maxpeers=100 \
+    --nat=extip:0.0.0.0 \
+    --rollup.sequencerhttp=https://rpc.api.lisk.com \
+    --rollup.halt=major \
+    --port=30303 \
+    --rollup.disabletxpoolgossip=true
 ```
 
 Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-geth) for detailed information about available options.
@@ -121,8 +181,7 @@ For, Lisk Sepolia Testnet:
   --l1.beacon=$L1_BEACON_URL \
   --l2=ws://localhost:8551 \
   --l2.jwt-secret=./jwt.txt \
-  --network=lisk-sepolia \
-  --syncmode=execution-layer
+  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE
 ```
 
 For, Lisk Mainnet:
@@ -134,9 +193,20 @@ For, Lisk Mainnet:
   --l1.beacon=$L1_BEACON_URL \
   --l2=ws://localhost:8551 \
   --l2.jwt-secret=./jwt.txt \
-  --network=lisk \
-  --syncmode=execution-layer
+  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE
 ```
+
+After start, op-node is requesting blocks from Ethereum one-by-one and determining the corresponding OP Mainnet blocks that were published to Ethereum. You should see logs like the following from op-node:
+
+```
+INFO [06-26|13:31:20.389] Advancing bq origin                      origin=17171d..1bc69b:8300332 originBehind=false
+```
+
+For more information refer to the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/mainnet#full-sync).
+
+> **Note**:
+> <br>In case you skipped the step to initialize `op-geth` service mentioned above, you can start the node by adding`--network=OP_NODE_NETWORK` flag.
+> <br>Please ensure that `--rollup.config` is removed in case of `--network` flag.
 
 Refer to the `op-node` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-node) for detailed information about available options.
 

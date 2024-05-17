@@ -9,7 +9,10 @@ services:
       - 30303:30303     # P2P TCP (currently unused)
       - 30303:30303/udp # P2P UDP (currently unused)
       - 7301:6060       # metrics
-    command: [ "bash", "./geth-entrypoint" ]
+    entrypoint:
+      - /bin/sh
+      - -c
+      - "./scripts/geth-init-entrypoint.sh && ./scripts/geth-start-entrypoint.sh"
     volumes:
         - ${GETH_HOST_DATA_DIR}:/data
     env_file:
