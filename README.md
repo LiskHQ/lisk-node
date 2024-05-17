@@ -32,7 +32,7 @@ The following system requirements are recommended to run Lisk L2 node.
 ## Usage
 
 > **Note**:
-> <br>It is currently not possible to run the node with `--op-network` flag until the configs for Lisk have been merged to the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
+> <br>It is currently not possible to run the nodes with the `--op-network` flag until the configs for Lisk have been merged to the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
 > <br>We currently have an [open PR](https://github.com/ethereum-optimism/superchain-registry/pull/234) to add the Lisk Mainnet config. We will soon create a PR to add the config for the Lisk Sepolia Testnet as well.
 
 ### Clone the Repository
@@ -44,18 +44,18 @@ cd lisk-node
 
 ### Docker
 
-1. Ensure you have an Ethereum L1 full node RPC available (not Lisk), and set `OP_NODE_L1_ETH_RPC` and `OP_NODE_L1_BEACON` (in the `.env.*` file if using docker-compose). If running your own L1 node, it needs to be synced before Lisk will be able to fully sync.
-2. Uncomment the line relevant to your network (`.env.sepolia`, or `.env.mainnet`) under the 2 `env_file` keys in `docker-compose.yml`. by default, it is set to `.env.mainnet`.
+1. Ensure you have an Ethereum L1 full node RPC available (not Lisk), and set the `OP_NODE_L1_ETH_RPC` and the `OP_NODE_L1_BEACON` variables (within the `.env.*` files, if using docker-compose). If running your own L1 node, it needs to be synced before the Lisk node will be able to fully sync.
+2. Please ensure that the environment file relevant to your network (`.env.sepolia`, or `.env.mainnet`) is set for the `env_file` properties within `docker-compose.yml`. By default, it is set to `.env.mainnet`.
 3. Run:
 
 ```
-docker compose up --detach --build
+docker compose up --build --detach
 ```
 
 4. You should now be able to `curl` your Lisk node:
 
 ```
-curl -d '{"id":0,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest",false]}' \
+curl -s -d '{"id":0,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest",false]}' \
   -H "Content-Type: application/json" http://localhost:8545
 ```
 
@@ -63,11 +63,10 @@ curl -d '{"id":0,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["late
 
 #### Build
 
-The following dependency need to be installed in order to build `op-geth` and `op-node`:
+To build `op-node` and `op-geth` from source, follow the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
+<br>Before proceeding, please make sure to install the following dependency (**this information is missing in the above OP documentation**):
 
 - jq
-
-To build `op-node` and `op-geth` from source, follow the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
 
 #### Set environment variables
 
@@ -96,10 +95,10 @@ Navigate to your `op-geth` directory and initialize the service by running the c
 ```
 
 > **Note**:
-> <br>Alternatively, the above initialization step can be skipped by specifying `--op-network=OP_NODE_NETWORK` flag in the start commands below.
-> <br>The flags fetches information from the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
+> <br>Alternatively, this initialization step can be skipped by specifying `--op-network=OP_NODE_NETWORK` flag in the start commands below.
+> <br>This flag automatically fetches the necessary information from the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
 
-#### Run
+#### Run op-geth
 
 Navigate to your `op-geth` directory and start service by running the command:
 
@@ -112,25 +111,25 @@ For, Lisk Sepolia Testnet:
     --http \
     --http.corsdomain="*" \
     --http.vhosts="*" \
-    --http.addr=127.0.0.1 \
+    --http.addr=0.0.0.0 \
     --http.port=8545 \
     --http.api=web3,debug,eth,net,engine \
-    --authrpc.addr=127.0.0.1 \
+    --authrpc.addr=0.0.0.0 \
     --authrpc.port=8551 \
     --authrpc.vhosts="*" \
     --authrpc.jwtsecret=PATH_TO_JWT_TEXT_FILE \
     --ws \
-    --ws.addr=127.0.0.1 \
+    --ws.addr=0.0.0.0 \
     --ws.port=8546 \
     --ws.origins="*" \
     --ws.api=debug,eth,net,engine \
     --metrics \
-    --metrics.addr=127.0.0.1 \
+    --metrics.addr=0.0.0.0 \
     --metrics.port=606 \
     --syncmode=full \
     --gcmode=full \
     --maxpeers=100 \
-    --nat=extip:127.0.0.1 \
+    --nat=extip:0.0.0.0 \
     --rollup.sequencerhttp=https://rpc.sepolia-api.lisk.com \
     --rollup.halt=major \
     --port=30303 \
@@ -147,25 +146,25 @@ For, Lisk Mainnet:
     --http \
     --http.corsdomain="*" \
     --http.vhosts="*" \
-    --http.addr=127.0.0.1 \
+    --http.addr=0.0.0.0 \
     --http.port=8545 \
     --http.api=web3,debug,eth,net,engine \
-    --authrpc.addr=127.0.0.1 \
+    --authrpc.addr=0.0.0.0 \
     --authrpc.port=8551 \
     --authrpc.vhosts="*" \
     --authrpc.jwtsecret=PATH_TO_JWT_TEXT_FILE \
     --ws \
-    --ws.addr=127.0.0.1 \
+    --ws.addr=0.0.0.0 \
     --ws.port=8546 \
     --ws.origins="*" \
     --ws.api=debug,eth,net,engine \
     --metrics \
-    --metrics.addr=127.0.0.1 \
+    --metrics.addr=0.0.0.0 \
     --metrics.port=606 \
     --syncmode=full \
     --gcmode=full \
     --maxpeers=100 \
-    --nat=extip:127.0.0.1 \
+    --nat=extip:0.0.0.0 \
     --rollup.sequencerhttp=https://rpc.api.lisk.com \
     --rollup.halt=major \
     --port=30303 \
@@ -173,6 +172,8 @@ For, Lisk Mainnet:
 ```
 
 Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-geth) for detailed information about available options.
+
+#### Run op-node
 
 Navigate to your `op-node` directory and start service by running the command:
 
@@ -200,8 +201,7 @@ For, Lisk Mainnet:
   --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE
 ```
 
-The above command start the `op-node` in the **full sync** mode. Depending on the chain length, the initial sync process could take significant time varying from days to weeks.
-The following logs indicate the initial process of `op-node` fetching sequentially blocks from Ethereum L1 to determine the OP Mainnet blocks that were published to Ethereum. During this process, `op-node` does not forward them to `op-geth`.
+The above command starts `op-node` in **full sync** mode. Depending on the chain length, the initial sync process could take significant time; varying from days to weeks.
 
 ```
 INFO [06-26|13:31:20.389] Advancing bq origin                      origin=17171d..1bc69b:8300332 originBehind=false
@@ -210,13 +210,13 @@ INFO [06-26|13:31:20.389] Advancing bq origin                      origin=17171d
 For more information refer to the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/mainnet#full-sync).
 
 > **Note**:
-> <br>In case you skipped the step to initialize `op-geth` service mentioned above, you can start the node by adding`--network=OP_NODE_NETWORK` flag.
-> <br>Please ensure that `--rollup.config` is removed in case of `--network` flag.
+> <br>In case you had skipped the `op-geth` [initialization step](#initialize-op-geth) above, you can start the node with the `--network=OP_NODE_NETWORK` flag.
+> <br>When specifying the `--network` flag, kindly make sure to remove the `--rollup.config` flag.
 
 Refer to the `op-node` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-node) for detailed information about available options.
 
 > **Note**:
-> <br> Some L1 nodes (e.g. Erigon) do not support fetching storage proofs. You can work around this by specifying `--l1.trustrpc` when starting op-node (add it in `op-node-entrypoint` and rebuild the docker image with `docker compose build`.) Do not do this unless you fully trust the L1 node provider.
+> <br>Some L1 nodes (e.g. Erigon) do not support fetching storage proofs. You can work around this by specifying `--l1.trustrpc` when starting op-node (add it in `op-node-entrypoint` and rebuild the docker image with `docker compose build`.) Do not do this unless you fully trust the L1 node provider.
 
 ## Snapshots
 
