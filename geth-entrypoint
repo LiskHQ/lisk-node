@@ -13,10 +13,10 @@ ADDITIONAL_ARGS=""
 OP_GETH_GCMODE="${OP_GETH_GCMODE:-full}"
 OP_GETH_SYNCMODE="${OP_GETH_SYNCMODE:-full}"
 
-if [[ -z "$OP_NODE_NETWORK" ]]; then
-    echo "expected OP_NODE_NETWORK to be set" 1>&2
-    exit 1
-fi
+# if [[ -z "$OP_NODE_NETWORK" ]]; then
+#     echo "expected OP_NODE_NETWORK to be set" 1>&2
+#     exit 1
+# fi
 
 mkdir -p $GETH_DATA_DIR
 
@@ -42,7 +42,11 @@ if [ "${OP_NODE_OVERRIDE_CANYON+x}" = x ]; then
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.canyon=$OP_NODE_OVERRIDE_CANYON"
 fi
 
-exec ./geth \
+# Init genesis
+./geth init --datadir=$GETH_DATA_DIR "$OP_GETH_GENESIS_FILE_PATH"
+
+# Start service
+./geth \
     --datadir="$GETH_DATA_DIR" \
     --verbosity="$VERBOSITY" \
     --http \
@@ -69,7 +73,7 @@ exec ./geth \
     --nat=extip:$HOST_IP \
     --rollup.sequencerhttp="$OP_GETH_SEQUENCER_HTTP" \
     --rollup.halt=major \
-    --op-network="$OP_NODE_NETWORK" \
+    # --op-network="$OP_NODE_NETWORK" \
     --port="$P2P_PORT" \
     --rollup.disabletxpoolgossip=true \
     $ADDITIONAL_ARGS # intentionally unquoted
