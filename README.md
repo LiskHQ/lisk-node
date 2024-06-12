@@ -20,7 +20,7 @@ The following system requirements are recommended to run Lisk L2 node.
 
 ### Storage
 
-- Machines with a high performance SSD drive with at least 4 TB free
+- Machines with a high performance SSD drive with at least 750GB (full node) or 4.5TB (archive node) free
 
 ## Supported networks
 
