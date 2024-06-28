@@ -40,4 +40,5 @@ exec ./op-reth node \
   --chain="$GENESIS_FILE_PATH" \
   --disable-discovery \
   --rollup.sequencer-http=$SEQUENCER_HTTP \
-  --rollup.disable-tx-pool-gossip
+  --rollup.disable-tx-pool-gossip \
+  $ADDITIONAL_ARGS
