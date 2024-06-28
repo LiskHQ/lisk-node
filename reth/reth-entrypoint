@@ -39,5 +39,5 @@ exec ./op-reth node \
   --metrics=0.0.0.0:"$METRICS_PORT" \
   --chain="$GENESIS_FILE_PATH" \
   --disable-discovery \
-  --rollup.sequencer-http=$RETH_SEQUENCER_HTTP \
+  --rollup.sequencer-http=$SEQUENCER_HTTP \
   --rollup.disable-tx-pool-gossip

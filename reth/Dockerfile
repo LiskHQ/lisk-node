@@ -27,7 +27,7 @@ RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
-RUN cargo build --bin op-reth --locked --features $FEATURES --profile maxperf
+RUN cargo build --bin op-reth --locked --features $FEATURES --profile release
 
 FROM ubuntu:22.04
 
@@ -39,7 +39,7 @@ RUN mkdir -p /var/log/supervisor
 WORKDIR /app
 
 COPY --from=op /app/op-node/bin/op-node ./
-COPY --from=reth /app/target/maxperf/op-reth ./
+COPY --from=reth /app/target/release/op-reth ./
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./reth/reth-entrypoint ./execution-entrypoint
 COPY op-node-entrypoint .

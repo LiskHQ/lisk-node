@@ -74,7 +74,7 @@ fi
     --syncmode="$OP_GETH_SYNCMODE" \
     --gcmode="$OP_GETH_GCMODE" \
     --maxpeers=100 \
-    --rollup.sequencerhttp="$OP_GETH_SEQUENCER_HTTP" \
+    --rollup.sequencerhttp="$SEQUENCER_HTTP" \
     --rollup.halt=major \
     # --op-network="$OP_NODE_NETWORK" \
     --port="$P2P_PORT" \

@@ -46,7 +46,7 @@ cd lisk-node
 
 1. Ensure you have an Ethereum L1 full node RPC available (not Lisk), and set the `OP_NODE_L1_ETH_RPC` and the `OP_NODE_L1_BEACON` variables (within the `.env.*` files, if using docker-compose). If running your own L1 node, it needs to be synced before the Lisk node will be able to fully sync.
 2. Please ensure that the environment file relevant to your network (`.env.sepolia`, or `.env.mainnet`) is set for the `env_file` properties within `docker-compose.yml`. By default, it is set to `.env.mainnet`.
-3. Please ensure to set `CLIENT` before starting the node (available options are geth and reth). 
+3. Please ensure to set `CLIENT` before starting the node (available options are geth and reth). By default, it is set to `geth`. 
 4. Run:
 
 ```
@@ -65,7 +65,7 @@ curl -s -d '{"id":0,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["l
 #### Build
 
 To build `op-node` and `op-geth` from source, follow the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
-<br>To build `op-reth` from source, follow the reth official [documentation](https://reth.rs/installation/source.html#build-from-source).
+<br>To build `op-reth` from source, follow the reth official [documentation](https://reth.rs/run/optimism.html#installing-op-reth).
 <br>Before proceeding, please make sure to install the following dependency (**this information is missing in the above OP documentation**):
 
 - jq
@@ -182,14 +182,14 @@ Navigate to your `reth` directory and start service by running the command:
 For, Lisk Sepolia Testnet:
 
 ```sh
-./target/release/reth node \
+./target/release/op-reth node \
   -vvv \
   --datadir="$DATADIR_PATH" \
   --log.stdout.format log-fmt \
   --ws \
   --ws.origins="*" \
   --ws.addr=0.0.0.0 \
-  --ws.port="$WS_PORT" \
+  --ws.port=8546 \
   --ws.api=debug,eth,net,txpool \
   --http \
   --http.corsdomain="*" \
@@ -210,14 +210,14 @@ For, Lisk Sepolia Testnet:
 For, Lisk Mainnet:
 
 ```sh
-./target/release/reth node \
+./target/release/op-reth node \
   -vvv \
   --datadir="$DATADIR_PATH" \
   --log.stdout.format log-fmt \
   --ws \
   --ws.origins="*" \
   --ws.addr=0.0.0.0 \
-  --ws.port="$WS_PORT" \
+  --ws.port=8546 \
   --ws.api=debug,eth,net,txpool \
   --http \
   --http.corsdomain="*" \
@@ -246,7 +246,7 @@ For, Lisk Sepolia Testnet:
 ```sh
 ./bin/op-node \
   --l1=$OP_NODE_L1_ETH_RPC \
-  --l1.rpckind=$$OP_NODE_L1_RPC_KIND \
+  --l1.rpckind=$OP_NODE_L1_RPC_KIND \
   --l1.beacon=$OP_NODE_L1_BEACON \
   --l2=ws://localhost:8551 \
   --l2.jwt-secret=PATH_TO_JWT_TEXT_FILE \
@@ -258,7 +258,7 @@ For, Lisk Mainnet:
 ```sh
 ./bin/op-node \
   --l1=$OP_NODE_L1_ETH_RPC \
-  --l1.rpckind=$$OP_NODE_L1_RPC_KIND \
+  --l1.rpckind=$OP_NODE_L1_RPC_KIND \
   --l1.beacon=$OP_NODE_L1_BEACON \
   --l2=ws://localhost:8551 \
   --l2.jwt-secret=PATH_TO_JWT_TEXT_FILE \
