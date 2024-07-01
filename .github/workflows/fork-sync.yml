@@ -1,0 +1,19 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # once a day
+  workflow_dispatch: # on button click
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: tgymnich/fork-sync@v1.8
+        with:
+          owner: base-org
+          head: main
+          base: development
+          pr_title: Sync fork repo
+          pr_message: Merge latest changes from upstream repo
