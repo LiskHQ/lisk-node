@@ -10,10 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: tgymnich/fork-sync@v1.8
+      - uses: tgymnich/fork-sync
         with:
           owner: base-org
+          repo: node
           head: main
-          base: development
+          base: main
           pr_title: Sync fork repo
           pr_message: Merge latest changes from upstream repo
