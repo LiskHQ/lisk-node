@@ -46,6 +46,10 @@ if [ "${OP_NODE_OVERRIDE_CANYON+x}" = x ]; then
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.canyon=$OP_NODE_OVERRIDE_CANYON"
 fi
 
+if [ "${OVERRIDE_FJORD+x}" = x ]; then
+    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.fjord=$OVERRIDE_FJORD"
+fi
+
 # Init genesis
 ./geth init --datadir=$GETH_DATA_DIR "$GENESIS_FILE_PATH"
 

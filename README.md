@@ -136,7 +136,8 @@ For, Lisk Sepolia Testnet:
     --rollup.halt=major \
     --port=30303 \
     --rollup.disabletxpoolgossip=true \
-    --override.canyon=0
+    --override.canyon=0 \
+    --override.fjord=1716998400
 ```
 
 For, Lisk Mainnet:
@@ -170,7 +171,8 @@ For, Lisk Mainnet:
     --rollup.sequencerhttp=SEQUENCER_HTTP \
     --rollup.halt=major \
     --port=30303 \
-    --rollup.disabletxpoolgossip=true
+    --rollup.disabletxpoolgossip=true \
+    --override.fjord=1720627201
 ```
 
 Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-geth) for detailed information about available options.
