@@ -248,7 +248,7 @@ Navigate to your `op-node` directory and start service by running the command:
 
 - Please make sure to patch your `op-node` with [`lisk-hotfix.patch`](./geth/lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted, affecting the Lisk nodes resulting in error logs. This patch is temporary until our RaaS provider updates the `SystemConfig` contract.
   ```sh
-  git apply <path-to-lisk-sepolia-hotfix.patch>
+  git apply <path-to-lisk-hotfix.patch>
   ```
 
 For, Lisk Sepolia Testnet:
