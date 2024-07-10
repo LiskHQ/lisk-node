@@ -33,7 +33,7 @@ The following system requirements are recommended to run Lisk L2 node.
 
 > **Note**:
 > <br>It is currently not possible to run the nodes with the `--op-network` flag until the configs for Lisk have been merged to the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
-> <br>We currently have an [open PR](https://github.com/ethereum-optimism/superchain-registry/pull/234) to add the Lisk Mainnet config. We will soon create a PR to add the config for the Lisk Sepolia Testnet as well.
+> <br>Currently, due to ongoing changes in the above repo, addition of new chains to the registry have been paused. Once the maintenance is over, we will submit PRs to add the config for the Lisk Mainnet and Lisk Sepolia Testnet.
 
 ### Clone the Repository
 
@@ -243,6 +243,13 @@ Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node.
 #### Run op-node
 
 Navigate to your `op-node` directory and start service by running the command:
+
+**Note**:
+
+- Please make sure to patch your `op-node` with [`lisk-hotfix.patch`](./geth/lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted, affecting the Lisk nodes resulting in error logs. This patch is temporary until our RaaS provider updates the `SystemConfig` contract.
+  ```sh
+  git apply <path-to-lisk-sepolia-hotfix.patch>
+  ```
 
 For, Lisk Sepolia Testnet:
 

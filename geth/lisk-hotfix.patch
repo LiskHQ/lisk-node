@@ -1,0 +1,26 @@
+Index: op-node/rollup/derive/system_config.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/op-node/rollup/derive/system_config.go b/op-node/rollup/derive/system_config.go
+--- a/op-node/rollup/derive/system_config.go	(revision 7283eb987be7b4413ae5b3088f83aa6a7b83c119)
++++ b/op-node/rollup/derive/system_config.go	(revision 9720ac43f8564a80866c12c7c6fd1e60986ff98e)
+@@ -21,6 +21,7 @@
+ 	SystemConfigUpdateGasConfig         = common.Hash{31: 1}
+ 	SystemConfigUpdateGasLimit          = common.Hash{31: 2}
+ 	SystemConfigUpdateUnsafeBlockSigner = common.Hash{31: 3}
++	SystemConfigUpdateGasConfigEcotone  = common.Hash{31: 4}
+ )
+ 
+ var (
+@@ -142,6 +143,9 @@
+ 		return nil
+ 	case SystemConfigUpdateUnsafeBlockSigner:
+ 		// Ignored in derivation. This configurable applies to runtime configuration outside of the derivation.
++		return nil
++	case SystemConfigUpdateGasConfigEcotone:
++		// HOTFIX: Ignore legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
+ 		return nil
+ 	default:
+ 		return fmt.Errorf("unrecognized L1 sysCfg update type: %s", updateType)
