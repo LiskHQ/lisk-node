@@ -65,11 +65,16 @@ cd lisk-node
 
 #### Build
 
-To build `op-node` and `op-geth` from source, follow the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
-<br>To build `op-reth` from source, follow the reth official [documentation](https://reth.rs/run/optimism.html#installing-op-reth).
-<br>Before proceeding, please make sure to install the following dependency (**this information is missing in the above OP documentation**):
+- Before proceeding, please make sure to install the following dependency (**this information is missing in the OP documentations linked below**):
+  - [jq](https://jqlang.github.io/jq/)
 
-- jq
+- To build `op-node` and `op-geth` from source, follow the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
+  - Before building the `op-node`, please patch the code with [`lisk-hotfix.patch`](./geth/lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted, affecting Lisk nodes resulting in errors. This patch is temporary until our RaaS provider updates the `SystemConfig` contract.
+    ```sh
+    git apply <path-to-lisk-hotfix.patch>
+    ```
+
+- To build `op-reth` from source, follow the reth official [documentation](https://reth.rs/run/optimism.html#installing-op-reth).
 
 #### Set environment variables
 
@@ -221,13 +226,6 @@ Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node.
 #### Run op-node
 
 Navigate to your `op-node` directory and start service by running the command:
-
-**Note**:
-
-- Please make sure to patch your `op-node` with [`lisk-hotfix.patch`](./geth/lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted, affecting the Lisk nodes resulting in error logs. This patch is temporary until our RaaS provider updates the `SystemConfig` contract.
-  ```sh
-  git apply <path-to-lisk-hotfix.patch>
-  ```
 
 For, Lisk Sepolia Testnet:
 
