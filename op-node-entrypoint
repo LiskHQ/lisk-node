@@ -29,6 +29,11 @@ get_public_ip() {
 #   exit 1
 # fi
 
+if [[ -z "$OVERRIDE_FJORD" ]]; then
+    echo "expected OVERRIDE_FJORD to be set" 1>&2
+    exit 2
+fi
+
 # wait until the local execution client comes up (authed so will return 401 without token)
 until [ "$(curl -s -w '%{http_code}' -o /dev/null "${OP_NODE_L2_ENGINE_RPC/ws/http}")" -eq 401 ]; do
   echo "waiting for the execution client to be ready"
@@ -45,15 +50,6 @@ fi
 export OP_NODE_P2P_ADVERTISE_IP=$PUBLIC_IP
 
 echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
-
-if [ "${OVERRIDE_FJORD+x}" = x ]; then
-    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.fjord=$OVERRIDE_FJORD"
-fi
-
-if [[ -z "$OVERRIDE_FJORD" ]]; then
-    echo "expected OVERRIDE_FJORD to be set" 1>&2
-    exit 2
-fi
 
 exec ./op-node \
   --l1=$OP_NODE_L1_ETH_RPC \

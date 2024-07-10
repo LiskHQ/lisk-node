@@ -18,6 +18,11 @@ OP_GETH_SYNCMODE="${OP_GETH_SYNCMODE:-full}"
 #     exit 1
 # fi
 
+if [[ -z "$OVERRIDE_FJORD" ]]; then
+    echo "expected OVERRIDE_FJORD to be set" 1>&2
+    exit 2
+fi
+
 mkdir -p $GETH_DATA_DIR
 
 echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
@@ -44,11 +49,6 @@ fi
 
 if [ "${OP_NODE_OVERRIDE_CANYON+x}" = x ]; then
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.canyon=$OP_NODE_OVERRIDE_CANYON"
-fi
-
-if [[ -z "$OVERRIDE_FJORD" ]]; then
-    echo "expected OVERRIDE_FJORD to be set" 1>&2
-    exit 2
 fi
 
 # Init genesis
