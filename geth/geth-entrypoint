@@ -13,6 +13,7 @@ ADDITIONAL_ARGS=""
 OP_GETH_GCMODE="${OP_GETH_GCMODE:-full}"
 OP_GETH_SYNCMODE="${OP_GETH_SYNCMODE:-full}"
 
+# TODO: Enable this check once Lisk configs are added to the superchain registry repo
 # if [[ -z "$OP_NODE_NETWORK" ]]; then
 #     echo "expected OP_NODE_NETWORK to be set" 1>&2
 #     exit 1
