@@ -180,35 +180,10 @@ Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/bu
 
 #### Run op-reth
 
+> **Note**:
+> <br>Currently we do not support running the reth client on the Lisk Sepolia Testnet.
+
 Navigate to your `reth` directory and start service by running the command:
-
-For, Lisk Sepolia Testnet:
-
-```sh
-./target/release/op-reth node \
-  -vvv \
-  --datadir="$DATADIR_PATH" \
-  --log.stdout.format log-fmt \
-  --ws \
-  --ws.origins="*" \
-  --ws.addr=0.0.0.0 \
-  --ws.port=8546 \
-  --ws.api=debug,eth,net,txpool \
-  --http \
-  --http.corsdomain="*" \
-  --http.addr=0.0.0.0 \
-  --http.port=8545 \
-  --http.api=debug,eth,net,txpool \
-  --authrpc.addr=0.0.0.0 \
-  --authrpc.port=8551 \
-  --authrpc.jwtsecret=PATH_TO_JWT_TEXT_FILE \
-  --metrics=0.0.0.0:6060 \
-  --chain=PATH_TO_NETWORK_GENESIS_FILE \
-  --disable-discovery \
-  --rollup.sequencer-http=SEQUENCER_HTTP \
-  --rollup.disable-tx-pool-gossip \
-  --override.canyon=0
-```
 
 For, Lisk Mainnet:
 
