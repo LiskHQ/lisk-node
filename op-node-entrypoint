@@ -50,9 +50,15 @@ if [ "${OVERRIDE_FJORD+x}" = x ]; then
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.fjord=$OVERRIDE_FJORD"
 fi
 
+if [[ -z "$OVERRIDE_FJORD" ]]; then
+    echo "expected OVERRIDE_FJORD to be set" 1>&2
+    exit 2
+fi
+
 exec ./op-node \
   --l1=$OP_NODE_L1_ETH_RPC \
   --l1.beacon=$OP_NODE_L1_BEACON \
   --l2.jwt-secret=$OP_NODE_L2_ENGINE_AUTH \
   --rollup.config=$OP_NODE_ROLLUP_CONFIG \
+  --override.fjord=$OVERRIDE_FJORD \
   $ADDITIONAL_ARGS

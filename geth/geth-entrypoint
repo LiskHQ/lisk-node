@@ -46,8 +46,9 @@ if [ "${OP_NODE_OVERRIDE_CANYON+x}" = x ]; then
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.canyon=$OP_NODE_OVERRIDE_CANYON"
 fi
 
-if [ "${OVERRIDE_FJORD+x}" = x ]; then
-    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.fjord=$OVERRIDE_FJORD"
+if [[ -z "$OVERRIDE_FJORD" ]]; then
+    echo "expected OVERRIDE_FJORD to be set" 1>&2
+    exit 2
 fi
 
 # Init genesis
@@ -83,4 +84,5 @@ fi
     # --op-network="$OP_NODE_NETWORK" \
     --port="$P2P_PORT" \
     --rollup.disabletxpoolgossip=true \
+    --override.fjord=$OVERRIDE_FJORD \
     $ADDITIONAL_ARGS # intentionally unquoted

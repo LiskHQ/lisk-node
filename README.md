@@ -262,7 +262,8 @@ For, Lisk Sepolia Testnet:
   --l1.beacon=$OP_NODE_L1_BEACON \
   --l2=ws://localhost:8551 \
   --l2.jwt-secret=PATH_TO_JWT_TEXT_FILE \
-  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE
+  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE \
+  --override.fjord=1716998400
 ```
 
 For, Lisk Mainnet:
@@ -274,7 +275,8 @@ For, Lisk Mainnet:
   --l1.beacon=$OP_NODE_L1_BEACON \
   --l2=ws://localhost:8551 \
   --l2.jwt-secret=PATH_TO_JWT_TEXT_FILE \
-  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE
+  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE \
+  --override.fjord=1720627201
 ```
 
 The above command starts `op-node` in **full sync** mode. Depending on the chain length, the initial sync process could take significant time; varying from days to weeks.
