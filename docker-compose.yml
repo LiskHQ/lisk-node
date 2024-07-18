@@ -23,7 +23,7 @@ services:
     depends_on:
       - execution
     ports:
-      - "7545:8545"     # RPC
+      - "9545:9545"     # RPC
       - "9222:9222"     # P2P TCP
       - "9222:9222/udp" # P2P UDP
       - "7300:7300"     # metrics

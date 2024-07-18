@@ -1,8 +1,6 @@
 #!/bin/bash
 set -eu
 
-ADDITIONAL_ARGS=""
-
 get_public_ip() {
   # Define a list of HTTP-based providers
   local PROVIDERS=(
@@ -53,8 +51,4 @@ export OP_NODE_P2P_ADVERTISE_IP=$PUBLIC_IP
 echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
 
 exec ./op-node \
-  --l1=$OP_NODE_L1_ETH_RPC \
-  --l1.beacon=$OP_NODE_L1_BEACON \
-  --l2.jwt-secret=$OP_NODE_L2_ENGINE_AUTH \
-  --rollup.config=$OP_NODE_ROLLUP_CONFIG \
-  $ADDITIONAL_ARGS
+  --rollup.config=$OP_NODE_ROLLUP_CONFIG
