@@ -19,11 +19,6 @@ OP_GETH_SYNCMODE="${OP_GETH_SYNCMODE:-full}"
 #     exit 1
 # fi
 
-if [[ -z "$OVERRIDE_FJORD" ]]; then
-    echo "expected OVERRIDE_FJORD to be set" 1>&2
-    exit 2
-fi
-
 mkdir -p $GETH_DATA_DIR
 
 echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
@@ -82,8 +77,9 @@ fi
     --maxpeers=100 \
     --rollup.sequencerhttp="$SEQUENCER_HTTP" \
     --rollup.halt=major \
-    # --op-network="$OP_NODE_NETWORK" \
     --port="$P2P_PORT" \
     --rollup.disabletxpoolgossip=true \
-    --override.fjord=$OVERRIDE_FJORD \
     $ADDITIONAL_ARGS # intentionally unquoted
+
+# Add the following flag(s) after Lisk is added to the Superchain Registry
+    # --op-network="$OP_NODE_NETWORK"

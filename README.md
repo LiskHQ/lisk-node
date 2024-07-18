@@ -142,8 +142,7 @@ For, Lisk Sepolia Testnet:
     --rollup.halt=major \
     --port=30303 \
     --rollup.disabletxpoolgossip=true \
-    --override.canyon=0 \
-    --override.fjord=1716998400
+    --override.canyon=0
 ```
 
 For, Lisk Mainnet:
@@ -177,8 +176,7 @@ For, Lisk Mainnet:
     --rollup.sequencerhttp=SEQUENCER_HTTP \
     --rollup.halt=major \
     --port=30303 \
-    --rollup.disabletxpoolgossip=true \
-    --override.fjord=1720627201
+    --rollup.disabletxpoolgossip=true
 ```
 
 Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-geth) for detailed information about available options.
@@ -236,8 +234,7 @@ For, Lisk Sepolia Testnet:
   --l1.beacon=$OP_NODE_L1_BEACON \
   --l2=ws://localhost:8551 \
   --l2.jwt-secret=PATH_TO_JWT_TEXT_FILE \
-  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE \
-  --override.fjord=1716998400
+  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE
 ```
 
 For, Lisk Mainnet:
@@ -249,8 +246,7 @@ For, Lisk Mainnet:
   --l1.beacon=$OP_NODE_L1_BEACON \
   --l2=ws://localhost:8551 \
   --l2.jwt-secret=PATH_TO_JWT_TEXT_FILE \
-  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE \
-  --override.fjord=1720627201
+  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE
 ```
 
 The above command starts `op-node` in **full sync** mode. Depending on the chain length, the initial sync process could take significant time; varying from days to weeks.
