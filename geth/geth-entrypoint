@@ -1,6 +1,12 @@
 #!/bin/bash
 set -eu
 
+echoBanner() {
+	echo -e "\n------------------------------------------------------------------------------------------------------------"
+	echo -e "$@"
+	echo -e "------------------------------------------------------------------------------------------------------------\n"
+}
+
 VERBOSITY=${GETH_VERBOSITY:-3}
 GETH_DATA_DIR=/data
 RPC_PORT="${RPC_PORT:-8545}"
@@ -21,6 +27,14 @@ OP_GETH_SYNCMODE="${OP_GETH_SYNCMODE:-full}"
 
 mkdir -p $GETH_DATA_DIR
 
+# Init genesis
+echoBanner "Initializing data directory under '${GETH_DATA_DIR}'"
+./geth init --datadir=$GETH_DATA_DIR "$GENESIS_FILE_PATH"
+
+# Download and apply snapshot, when configured
+(. download-apply-snapshot.sh)
+
+# Set the start flags
 echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
 
 if [ "${OP_GETH_ETH_STATS+x}" = x ]; then
@@ -47,10 +61,8 @@ if [ "${OP_NODE_OVERRIDE_CANYON+x}" = x ]; then
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.canyon=$OP_NODE_OVERRIDE_CANYON"
 fi
 
-# Init genesis
-./geth init --datadir=$GETH_DATA_DIR "$GENESIS_FILE_PATH"
-
 # Start service
+echoBanner "Starting node..."
 ./geth \
     --datadir="$GETH_DATA_DIR" \
     --verbosity="$VERBOSITY" \

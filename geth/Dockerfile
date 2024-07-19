@@ -41,6 +41,7 @@ COPY --from=op /app/op-node/bin/op-node ./
 COPY --from=geth /app/build/bin/geth ./
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY geth/geth-entrypoint ./execution-entrypoint
+COPY geth/download-apply-snapshot.sh .
 COPY op-node-entrypoint .
 COPY sepolia ./sepolia
 COPY mainnet ./mainnet

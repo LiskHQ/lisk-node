@@ -96,6 +96,8 @@ For more information refer to the OP [documentation](https://docs.optimism.io/bu
 
 #### Initialize op-geth
 
+> **Important**: If you already had your node running prior to the Fjord upgrade (Mainnet: July 10, 2024 & Sepolia: May 29, 2024), please make sure to re-initialize your data directory with the updated genesis block. This is automatically taken care of for the Docker users.
+
 Navigate to your `op-geth` directory and initialize the service by running the command:
 
 ```sh
@@ -268,9 +270,34 @@ Refer to the `op-node` configuration [documentation](https://docs.optimism.io/bu
 
 ## Snapshots
 
-TBA
+> **Note**: Currently, snapshots are only available for the `op-geth` client and are **NOT** regularly updated. We are currently working on improving this.
 
-### Syncing
+### Docker
+
+To enable auto-snapshot download and application, please set the `APPLY_SNAPSHOT` environment variable to `true` when starting the node.
+```sh
+APPLY_SNAPSHOT=true docker compose up --build --detach
+```
+
+### Source
+
+Please follow the steps below:
+
+- Download the snapshot and the corresponding checksum from. The latest snapshot is always named `geth-snapshot`:
+  - Mainnet: https://snapshots.lisk.com/mainnet
+  - Sepolia: https://snapshots.lisk.com/sepolia
+
+- Verify the integrity of the downloaded snapshot with:
+  ```sh
+  sha256sum -c <checksum-file-name>
+  ```
+
+- Import the snapshot
+  ```sh
+  ./build/bin/geth import --datadir=$GETH_DATA_DIR <path-to-snapshot>
+  ```
+
+## Syncing
 
 Sync speed depends on your L1 node, as the majority of the chain is derived from data submitted to the L1. You can check your syncing status using the `optimism_syncStatus` RPC on the `op-node` container. Example:
 
