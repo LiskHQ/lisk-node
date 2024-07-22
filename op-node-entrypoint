@@ -1,6 +1,12 @@
 #!/bin/bash
 set -eu
 
+echoBanner() {
+	echo -e "\n------------------------------------------------------------------------------------------------------------"
+	echo -e "$@"
+	echo -e "------------------------------------------------------------------------------------------------------------\n"
+}
+
 get_public_ip() {
   # Define a list of HTTP-based providers
   local PROVIDERS=(
@@ -48,7 +54,10 @@ else
 fi
 export OP_NODE_P2P_ADVERTISE_IP=$PUBLIC_IP
 
+# Set the start flags
 echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
 
+# Start service
+echoBanner "Starting op-node..."
 exec ./op-node \
   --rollup.config=$OP_NODE_ROLLUP_CONFIG

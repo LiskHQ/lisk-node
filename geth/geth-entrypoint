@@ -25,6 +25,7 @@ OP_GETH_SYNCMODE="${OP_GETH_SYNCMODE:-full}"
 #     exit 1
 # fi
 
+# Ensure data directory exists
 mkdir -p $GETH_DATA_DIR
 
 # Init genesis
@@ -58,16 +59,10 @@ if [ "${HOST_IP:+x}" = x ]; then
 fi
 
 # Start service
-echoBanner "Starting node..."
+echoBanner "Starting op-geth execution node..."
 ./geth \
     --datadir="$GETH_DATA_DIR" \
     --verbosity="$VERBOSITY" \
-    --http \
-    --http.corsdomain="*" \
-    --http.vhosts="*" \
-    --http.addr=0.0.0.0 \
-    --http.port="$RPC_PORT" \
-    --http.api=web3,debug,eth,net,engine \
     --authrpc.addr=0.0.0.0 \
     --authrpc.port="$AUTHRPC_PORT" \
     --authrpc.vhosts="*" \
@@ -77,15 +72,21 @@ echoBanner "Starting node..."
     --ws.port="$WS_PORT" \
     --ws.origins="*" \
     --ws.api=debug,eth,net,engine \
+    --http \
+    --http.corsdomain="*" \
+    --http.vhosts="*" \
+    --http.addr=0.0.0.0 \
+    --http.port="$RPC_PORT" \
+    --http.api=web3,debug,eth,net,engine \
     --metrics \
     --metrics.addr=0.0.0.0 \
     --metrics.port="$METRICS_PORT" \
     --syncmode="$OP_GETH_SYNCMODE" \
     --gcmode="$OP_GETH_GCMODE" \
+    --port="$P2P_PORT" \
     --maxpeers=100 \
     --rollup.sequencerhttp="$SEQUENCER_HTTP" \
     --rollup.halt=major \
-    --port="$P2P_PORT" \
     --rollup.disabletxpoolgossip=true \
     $ADDITIONAL_ARGS # intentionally unquoted
 
