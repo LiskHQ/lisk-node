@@ -15,8 +15,6 @@ services:
       # select your network here:
       #   - .env.sepolia
       - .env.mainnet
-    environment:
-      - APPLY_SNAPSHOT=$APPLY_SNAPSHOT
   node:
     platform: linux/amd64
     build:
