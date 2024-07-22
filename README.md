@@ -143,8 +143,7 @@ For, Lisk Sepolia Testnet:
     --rollup.sequencerhttp=SEQUENCER_HTTP \
     --rollup.halt=major \
     --port=30303 \
-    --rollup.disabletxpoolgossip=true \
-    --override.canyon=0
+    --rollup.disabletxpoolgossip=true
 ```
 
 For, Lisk Mainnet:

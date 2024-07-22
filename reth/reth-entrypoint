@@ -13,10 +13,6 @@ if [[ -z "$RETH_CHAIN" ]]; then
     exit 1
 fi
 
-if [ "${OP_NODE_OVERRIDE_CANYON+x}" = x ]; then
-    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.canyon=$OP_NODE_OVERRIDE_CANYON"
-fi
-
 mkdir -p $RETH_DATA_DIR
 echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
 

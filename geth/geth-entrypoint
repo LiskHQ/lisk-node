@@ -55,10 +55,6 @@ fi
 
 if [ "${HOST_IP:+x}" = x ]; then
 	ADDITIONAL_ARGS="$ADDITIONAL_ARGS --nat=extip:$HOST_IP"
-fi 
-
-if [ "${OP_NODE_OVERRIDE_CANYON+x}" = x ]; then
-    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --override.canyon=$OP_NODE_OVERRIDE_CANYON"
 fi
 
 # Start service

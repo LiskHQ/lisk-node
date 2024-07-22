@@ -1,4 +1,4 @@
-FROM golang:1.21 as op
+FROM golang:1.21 AS op
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN git apply lisk-hotfix.patch && \
     cd op-node && \
     make VERSION=$VERSION op-node
 
-FROM golang:1.21 as geth
+FROM golang:1.21 AS geth
 
 WORKDIR /app
 
