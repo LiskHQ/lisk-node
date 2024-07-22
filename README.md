@@ -11,7 +11,7 @@ This repository contains information on how to run your own node on the Lisk net
 
 ## System requirements
 
-The following system requirements are recommended to run Lisk L2 node.
+The following system requirements are recommended to run a Lisk L2 node.
 
 ### Memory
 
