@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: ${CLIENT}/Dockerfile
+      args:
+        PROFILE: ${RETH_BUILD_PROFILE:-release}
     ports:
       - "8545:8545"       # RPC
       - "8546:8546"       # websocket
@@ -13,13 +15,15 @@ services:
         - ${HOST_DATA_DIR}:/data
     env_file:
       # select your network here:
-      #   - .env.sepolia
+      # - .env.sepolia
       - .env.mainnet
   node:
     platform: linux/amd64
     build:
       context: .
       dockerfile: ${CLIENT}/Dockerfile
+      args:
+        PROFILE: ${RETH_BUILD_PROFILE:-release}
     depends_on:
       - execution
     ports:
@@ -31,5 +35,5 @@ services:
     command: [ "bash", "./op-node-entrypoint" ]
     env_file:
       # select your network here:
-      #   - .env.sepolia
+      # - .env.sepolia
       - .env.mainnet

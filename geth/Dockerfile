@@ -9,9 +9,9 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
-# Temporary patch until our Raas provider redeploys the SystemConfig contract
-COPY geth/lisk-hotfix.patch .
-RUN git apply lisk-hotfix.patch && \
+# Temporary patch until our RaaS provider re-deploys the SystemConfig contract
+COPY op-node-lisk-hotfix.patch .
+RUN git apply op-node-lisk-hotfix.patch && \
     cd op-node && \
     make VERSION=$VERSION op-node
 

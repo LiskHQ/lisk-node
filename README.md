@@ -24,16 +24,16 @@ The following system requirements are recommended to run a Lisk L2 node.
 
 ## Supported networks
 
-| Network              | Status |
-| -------------------- | ------ |
-| Lisk Sepolia Testnet | ✅     |
-| Lisk Mainnet         | ✅     |
+| Network      | Status |
+| ------------ | ------ |
+| Lisk Sepolia | ✅     |
+| Lisk Mainnet | ✅     |
 
 ## Usage
 
 > **Note**:
-> <br>It is currently not possible to run the nodes with the `--op-network` flag until the configs for Lisk have been merged to the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
-> <br>Currently, due to ongoing changes in the above repo, addition of new chains to the registry have been paused. Once the maintenance is over, we will submit PRs to add the config for the Lisk Mainnet and Lisk Sepolia Testnet.
+> - It is currently not possible to run the nodes with the `--op-network` flag until the configs for Lisk have been merged to the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
+> - Currently, due to ongoing changes in the above repo, addition of new chains to the registry have been paused. Once the maintenance is over, we will submit PRs to add the config for Lisk Mainnet and Lisk Sepolia.
 
 ### Clone the Repository
 
@@ -46,16 +46,25 @@ cd lisk-node
 
 1. Ensure you have an Ethereum L1 full node RPC available (not Lisk), and set the `OP_NODE_L1_ETH_RPC` and the `OP_NODE_L1_BEACON` variables (within the `.env.*` files, if using docker-compose). If running your own L1 node, it needs to be synced before the Lisk node will be able to fully sync.
 
-2. Please ensure that the environment file relevant to your network (`.env.sepolia`, or `.env.mainnet`) is set for the `env_file` properties within `docker-compose.yml`. By default, it is set to `.env.mainnet`.
+1. Please ensure that the environment file relevant to your network (`.env.sepolia`, or `.env.mainnet`) is set for the `env_file` properties within `docker-compose.yml`. By default, it is set to `.env.mainnet`.
 
-3. We currently support running either the `op-geth` or the `op-reth` nodes alongside the `op-node`. By default, we run the `op-geth` node. If you would like to run the `op-reth` node instead, please set the `CLIENT` environment variable to `reth` before starting the node.
+1. We currently support running either the `op-geth` or the `op-reth` nodes alongside the `op-node`. By default, we run the `op-geth` node. If you would like to run the `op-reth` client, please set the `CLIENT` environment variable to `reth` before starting the node.
+    > **Note**:
+    > - The `op-reth` client can be built in either the `release` (default) or `maxperf` profile. To learn more about them, please check reth's documentation on [Optimizations](https://github.com/paradigmxyz/reth/blob/main/book/installation/source.md#optimizations). Please set the `RETH_BUILD_PROFILE` environment variable accordingly.
+    > - If you are building the `op-reth` client in `maxperf` profile, please ensure that you have a machine with 32 GB RAM.
+    > - Additionally, if you have the Docker Desktop installed on your system, please make sure to set `Memory limit` to a minimum of `16 GB`.<br>It can be set under `Settings -> Resources -> Resource Allocation -> Memory limit`.
 
-4. Run:
+1. Run:
+    <br>with `op-geth`:
     ```sh
     docker compose up --build --detach
     ```
+    or, with `op-reth`:
+    ```sh
+    CLIENT=reth RETH_BUILD_PROFILE=release docker compose up --build --detach
+    ```
 
-5. You should now be able to `curl` your Lisk node:
+1. You should now be able to `curl` your Lisk node:
     ```sh
     curl -s -d '{"id":0,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest",false]}' \
       -H "Content-Type: application/json" http://localhost:8545
@@ -105,48 +114,12 @@ Navigate to your `op-geth` directory and initialize the service by running the c
 ```
 
 > **Note**:
-> <br>Alternatively, this initialization step can be skipped by specifying `--op-network=OP_NODE_NETWORK` flag in the start commands below.
-> <br>This flag automatically fetches the necessary information from the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
+> - Alternatively, this initialization step can be skipped by specifying `--op-network=OP_NODE_NETWORK` flag in the start commands below.
+> - This flag automatically fetches the necessary information from the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
 
 #### Run op-geth
 
 Navigate to your `op-geth` directory and start service by running the command:
-
-For, Lisk Sepolia Testnet:
-
-```sh
-./build/bin/geth \
-    --datadir=$DATADIR_PATH \
-    --verbosity=3 \
-    --http \
-    --http.corsdomain="*" \
-    --http.vhosts="*" \
-    --http.addr=0.0.0.0 \
-    --http.port=8545 \
-    --http.api=web3,debug,eth,net,engine \
-    --authrpc.addr=0.0.0.0 \
-    --authrpc.port=8551 \
-    --authrpc.vhosts="*" \
-    --authrpc.jwtsecret=PATH_TO_JWT_TEXT_FILE \
-    --ws \
-    --ws.addr=0.0.0.0 \
-    --ws.port=8546 \
-    --ws.origins="*" \
-    --ws.api=debug,eth,net,engine \
-    --metrics \
-    --metrics.addr=0.0.0.0 \
-    --metrics.port=6060 \
-    --syncmode=full \
-    --gcmode=full \
-    --maxpeers=100 \
-    --nat=extip:0.0.0.0 \
-    --rollup.sequencerhttp=SEQUENCER_HTTP \
-    --rollup.halt=major \
-    --port=30303 \
-    --rollup.disabletxpoolgossip=true
-```
-
-For, Lisk Mainnet:
 
 ```sh
 ./build/bin/geth \
@@ -184,18 +157,17 @@ Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/bu
 
 #### Run op-reth
 
-> **Note**:
-> <br>Currently we do not support running the reth client on the Lisk Sepolia Testnet.
-
 Navigate to your `reth` directory and start service by running the command:
-
-For, Lisk Mainnet:
 
 ```sh
 ./target/release/op-reth node \
   -vvv \
+  --chain=PATH_TO_NETWORK_GENESIS_FILE \
   --datadir="$DATADIR_PATH" \
   --log.stdout.format log-fmt \
+  --authrpc.addr=0.0.0.0 \
+  --authrpc.port=8551 \
+  --authrpc.jwtsecret=PATH_TO_JWT_TEXT_FILE \
   --ws \
   --ws.origins="*" \
   --ws.addr=0.0.0.0 \
@@ -205,40 +177,24 @@ For, Lisk Mainnet:
   --http.corsdomain="*" \
   --http.addr=0.0.0.0 \
   --http.port=8545 \
-  --http.api=debug,eth,net,txpool \
-  --authrpc.addr=0.0.0.0 \
-  --authrpc.port=8551 \
-  --authrpc.jwtsecret=PATH_TO_JWT_TEXT_FILE \
+  --http.api=web3,debug,eth,net,txpool \
   --metrics=0.0.0.0:6060 \
-  --chain=PATH_TO_NETWORK_GENESIS_FILE \
   --disable-discovery \
+  --port=30303 \
   --rollup.sequencer-http=SEQUENCER_HTTP \
   --rollup.disable-tx-pool-gossip
 ```
 
 Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node.html#reth-node) for detailed information about available options.
 
-> **Note**: Official Lisk sequencer HTTP:
-> <br>For Mainnet: https://rpc.sepolia-api.lisk.com
-> <br>For Sepolia Testnet: https://rpc.api.lisk.com
+> **Note**:
+> <br>Official Lisk Sequencer HTTP RPC:
+> - **Lisk Mainnet**: https://rpc.sepolia-api.lisk.com
+> - **Lisk Sepolia**: https://rpc.api.lisk.com
 
 #### Run op-node
 
 Navigate to your `op-node` directory and start service by running the command:
-
-For, Lisk Sepolia Testnet:
-
-```sh
-./bin/op-node \
-  --l1=$OP_NODE_L1_ETH_RPC \
-  --l1.rpckind=$OP_NODE_L1_RPC_KIND \
-  --l1.beacon=$OP_NODE_L1_BEACON \
-  --l2=ws://localhost:8551 \
-  --l2.jwt-secret=PATH_TO_JWT_TEXT_FILE \
-  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE
-```
-
-For, Lisk Mainnet:
 
 ```sh
 ./bin/op-node \
@@ -259,8 +215,8 @@ INFO [06-26|13:31:20.389] Advancing bq origin                      origin=17171d
 For more information refer to the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/mainnet#full-sync).
 
 > **Note**:
-> <br>In case you had skipped the `op-geth` [initialization step](#initialize-op-geth) above, you can start the node with the `--network=OP_NODE_NETWORK` flag.
-> <br>When specifying the `--network` flag, kindly make sure to remove the `--rollup.config` flag.
+> - In case you had skipped the `op-geth` [initialization step](#initialize-op-geth) above, you can start the node with the `--network=OP_NODE_NETWORK` flag.
+> - When specifying the `--network` flag, kindly make sure to remove the `--rollup.config` flag.
 
 Refer to the `op-node` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-node) for detailed information about available options.
 
