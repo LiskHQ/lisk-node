@@ -33,7 +33,7 @@ The following system requirements are recommended to run a Lisk L2 node.
 
 > **Note**:
 > - It is currently not possible to run the nodes with the `--op-network` flag until the configs for Lisk have been merged to the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
-> - Currently, due to ongoing changes in the above repo, addition of new chains to the registry have been paused. Once the maintenance is over, we will submit PRs to add the config for Lisk Mainnet and Lisk Sepolia.
+> - Currently, due to ongoing changes in the above repo, addition of new chains to the registry have been paused. Once the maintenance is over, we will submit PRs to add the config for both Lisk Sepolia and Lisk Mainnet.
 
 ### Clone the Repository
 
@@ -105,7 +105,7 @@ For more information refer to the OP [documentation](https://docs.optimism.io/bu
 
 #### Initialize op-geth
 
-> **Important**: If you already had your node running prior to the Fjord upgrade (Mainnet: July 10, 2024 & Sepolia: May 29, 2024), please make sure to re-initialize your data directory with the updated genesis block. This is automatically taken care of for the Docker users.
+> **Important**: If you already had your node running prior to the Fjord upgrade (Sepolia: May 29, 2024 & Mainnet: July 10, 2024), please make sure to re-initialize your data directory with the updated genesis block. This is automatically taken care of for the Docker users.
 
 Navigate to your `op-geth` directory and initialize the service by running the command:
 
@@ -189,8 +189,8 @@ Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node.
 
 > **Note**:
 > <br>Official Lisk Sequencer HTTP RPC:
-> - **Lisk Mainnet**: https://rpc.sepolia-api.lisk.com
-> - **Lisk Sepolia**: https://rpc.api.lisk.com
+> - **Lisk Sepolia**: https://rpc.sepolia-api.lisk.com
+> - **Lisk Mainnet**: https://rpc.api.lisk.com
 
 #### Run op-node
 
@@ -239,8 +239,8 @@ APPLY_SNAPSHOT=true docker compose up --build --detach
 Please follow the steps below:
 
 - Download the snapshot and the corresponding checksum from. The latest snapshot is always named `geth-snapshot`:
-  - Mainnet: https://snapshots.lisk.com/mainnet
   - Sepolia: https://snapshots.lisk.com/sepolia
+  - Mainnet: https://snapshots.lisk.com/mainnet
 
 - Verify the integrity of the downloaded snapshot with:
   ```sh
