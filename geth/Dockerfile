@@ -9,7 +9,8 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
-# Temporary patch until our RaaS provider re-deploys the SystemConfig contract
+# Patch to handle the legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
+# Only emitted by SystemConfig contract on Lisk Sepolia
 COPY op-node-lisk-hotfix.patch .
 RUN git apply op-node-lisk-hotfix.patch && \
     cd op-node && \

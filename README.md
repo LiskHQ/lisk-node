@@ -78,7 +78,7 @@ cd lisk-node
   - [jq](https://jqlang.github.io/jq/)
 
 - To build `op-node` and `op-geth` from source, follow the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
-  - Before building the `op-node`, please patch the code with [`lisk-hotfix.patch`](./geth/lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted, affecting Lisk nodes resulting in errors. This patch is temporary until our RaaS provider updates the `SystemConfig` contract.
+  - Before building the `op-node`, please patch the code with [`lisk-hotfix.patch`](./geth/lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted, affecting Lisk nodes resulting in errors.
     ```sh
     git apply <path-to-lisk-hotfix.patch>
     ```

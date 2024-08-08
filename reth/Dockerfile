@@ -3,13 +3,14 @@ FROM golang:1.21 AS op
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.7.7
-ENV COMMIT=f8143c8cbc4cc0c83922c53f17a1e47280673485
+ENV VERSION=v1.9.0
+ENV COMMIT=ec45f6634ab2855a4ae5d30c4e240d79f081d689
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
-# Temporary patch until our RaaS provider re-deploys the SystemConfig contract
+# Patch to handle the legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
+# Only emitted by SystemConfig contract on Lisk Sepolia
 COPY op-node-lisk-hotfix.patch .
 RUN git apply op-node-lisk-hotfix.patch && \
     cd op-node && \
@@ -25,8 +26,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/paradigmxyz/reth.git
-ENV VERSION=v1.0.3
-ENV COMMIT=390f30aadebcdd509e72cc04327c3b854de076a6
+ENV VERSION=v1.0.4
+ENV COMMIT=e24e4c773d7571a5a54dba7854643c02d0b0a841
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
