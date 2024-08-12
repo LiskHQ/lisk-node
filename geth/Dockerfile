@@ -10,7 +10,7 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
 # Patch to handle the legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
-# Only emitted by SystemConfig contract on Lisk Sepolia
+# Emitted only on Lisk Sepolia from the SystemConfig contract
 COPY op-node-lisk-hotfix.patch .
 RUN git apply op-node-lisk-hotfix.patch && \
     cd op-node && \

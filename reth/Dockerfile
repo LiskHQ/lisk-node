@@ -10,13 +10,13 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
 # Patch to handle the legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
-# Only emitted by SystemConfig contract on Lisk Sepolia
+# Emitted only on Lisk Sepolia from the SystemConfig contract
 COPY op-node-lisk-hotfix.patch .
 RUN git apply op-node-lisk-hotfix.patch && \
     cd op-node && \
     make VERSION=$VERSION op-node
 
-FROM rust:1.79 AS reth
+FROM rust:1.80 AS reth
 
 ARG FEATURES=jemalloc,asm-keccak,optimism
 ARG PROFILE=release
@@ -26,11 +26,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/paradigmxyz/reth.git
-ENV VERSION=v1.0.4
-ENV COMMIT=e24e4c773d7571a5a54dba7854643c02d0b0a841
-RUN git clone $REPO --branch $VERSION --single-branch . && \
-    git switch -c branch-$VERSION && \
-    bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
+ENV COMMIT=ffd71a0b024e6c20f15cb95bcdf1b4882fc91093
+RUN git clone $REPO . && git checkout $COMMIT
 
 RUN cargo build --bin op-reth --locked --features $FEATURES --profile $PROFILE
 
