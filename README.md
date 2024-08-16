@@ -22,6 +22,10 @@ The following system requirements are recommended to run a Lisk L2 node.
 
 - Machines with a high performance SSD drive with at least 750GB (full node) or 4.5TB (archive node) free
 
+### Docker
+
+- Docker Engine version [27.0.1](https://docs.docker.com/engine/release-notes/27.0/) or higher
+
 ## Supported networks
 
 | Network      | Status |
