@@ -64,7 +64,7 @@ download_and_verify(){
 for i in $(seq 1 $SNAPSHOT_DOWNLOAD_MAX_TRIES); do download_and_verify && returncode=0 && break || returncode=$? && sleep 10; done; (exit $returncode)
 
 # Extract if the downloaded snapshot file is a tarball
-if [[ $SNAPSHOT_REMOTE_FILENAME == *.tar.gz ]]; then
+if [[ $SNAPSHOT_REMOTE_FILENAME == *.tar.gz && $SNAPSHOT_REMOTE_FILENAME != *datadir* ]]; then
   readonly SNAPSHOT_FILENAME=$(tar -tf ${SNAPSHOT_DIR}/${SNAPSHOT_REMOTE_FILENAME})
 
   echo -e "\nExtracting the snapshot tarball to '${SNAPSHOT_DIR}/${SNAPSHOT_FILENAME}'"
@@ -81,7 +81,13 @@ fi
 
 # Import snapshot
 echoBanner "Importing snapshot..."
-./geth import --syncmode "${OP_GETH_SYNCMODE:-full}" --datadir=$GETH_DATA_DIR $SNAPSHOT_DIR/$SNAPSHOT_FILENAME
+if [[ $SNAPSHOT_FILENAME == *datadir*.tar.gz ]]; then
+  echo "Extracting geth data directory snapshot to ${GETH_DATA_DIR}..."
+  tar --directory $GETH_DATA_DIR -xf $SNAPSHOT_DIR/$SNAPSHOT_FILENAME
+else
+  echo "Importing geth export snapshot to ${GETH_DATA_DIR}..."
+  ./geth import --syncmode "${OP_GETH_SYNCMODE:-full}" --datadir=$GETH_DATA_DIR $SNAPSHOT_DIR/$SNAPSHOT_FILENAME
+fi
 readonly SNAPSHOT_IMPORT_EXIT_CODE=$?
 
 echo -e "\nRemoving the temporary snapshot download directory: '${SNAPSHOT_DIR}'"
