@@ -1,4 +1,5 @@
 #!/bin/bash
+set +e
 set -u
 
 # Set alias for echoBanner if unavailable - for local testing
