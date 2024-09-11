@@ -19,7 +19,7 @@ RUN git apply op-node-lisk-hotfix.patch && \
 FROM rust:1.80 AS reth
 
 ARG FEATURES=jemalloc,asm-keccak,optimism
-ARG PROFILE=release
+ARG PROFILE=maxperf
 
 WORKDIR /app
 
@@ -32,7 +32,7 @@ RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
-RUN cargo build --bin op-reth --locked --features $FEATURES --profile $PROFILE
+RUN RUSTFLAGS="-C target-cpu=native" cargo build --bin op-reth --locked --features $FEATURES --profile $PROFILE
 
 FROM ubuntu:22.04
 

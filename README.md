@@ -54,8 +54,8 @@ cd lisk-node
 
 1. We currently support running either the `op-geth` or the `op-reth` nodes alongside the `op-node`. By default, we run the `op-geth` node. If you would like to run the `op-reth` client, please set the `CLIENT` environment variable to `reth` before starting the node.
     > **Note**:
-    > - The `op-reth` client can be built in either the `release` (default) or `maxperf` profile. To learn more about them, please check reth's documentation on [Optimizations](https://github.com/paradigmxyz/reth/blob/main/book/installation/source.md#optimizations). Please set the `RETH_BUILD_PROFILE` environment variable accordingly.
-    > - If you are building the `op-reth` client in `maxperf` profile, please ensure that you have a machine with 32 GB RAM.
+    > - The `op-reth` client can be built in either the `maxperf` (default) or `release` profile. To learn more about them, please check reth's documentation on [Optimizations](https://github.com/paradigmxyz/reth/blob/main/book/installation/source.md#optimizations). Please set the `RETH_BUILD_PROFILE` environment variable accordingly.
+    > - Unless you are building the `op-reth` client in `maxperf` profile, please ensure that you have a machine with 32 GB RAM.
     > - Additionally, if you have the Docker Desktop installed on your system, please make sure to set `Memory limit` to a minimum of `16 GB`.<br>It can be set under `Settings -> Resources -> Resource Allocation -> Memory limit`.
 
 1. Run:
@@ -82,7 +82,7 @@ cd lisk-node
   - [jq](https://jqlang.github.io/jq/)
 
 - To build `op-node` and `op-geth` from source, follow the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
-  - Before building the `op-node`, please patch the code with [`lisk-hotfix.patch`](./geth/lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted on Lisk Sepolia, resulting in errors on the Lisk nodes.
+  - Before building the `op-node`, please patch the code with [`lisk-hotfix.patch`](./op-node-lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted on Lisk Sepolia, resulting in errors on the Lisk nodes.
     ```sh
     git apply <path-to-lisk-hotfix.patch>
     ```

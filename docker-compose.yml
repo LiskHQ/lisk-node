@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: ${CLIENT}/Dockerfile
       args:
-        PROFILE: ${RETH_BUILD_PROFILE:-release}
+        PROFILE: ${RETH_BUILD_PROFILE:-maxperf}
     ports:
       - "8545:8545"       # RPC
       - "8546:8546"       # websocket
@@ -23,7 +23,7 @@ services:
       context: .
       dockerfile: ${CLIENT}/Dockerfile
       args:
-        PROFILE: ${RETH_BUILD_PROFILE:-release}
+        PROFILE: ${RETH_BUILD_PROFILE:-maxperf}
     depends_on:
       - execution
     ports:
