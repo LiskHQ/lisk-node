@@ -36,7 +36,7 @@ The following system requirements are recommended to run a Lisk L2 node.
 ## Usage
 
 > **Note**:
-> - It is currently not possible to run the nodes with the `--op-network` flag until the open PRs for adding configs for Lisk [Sepolia](https://github.com/ethereum-optimism/superchain-registry/pull/506) and Lisk [Mainnet](https://github.com/ethereum-optimism/superchain-registry/pull/502) are merged into the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry)
+> - It is currently not possible to run the nodes with the `--op-network` flag until the open PRs for adding configs for [Lisk Sepolia](https://github.com/ethereum-optimism/superchain-registry/pull/506) and [Lisk Mainnet](https://github.com/ethereum-optimism/superchain-registry/pull/502) are merged into the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
 
 ### Clone the Repository
 
