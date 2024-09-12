@@ -55,7 +55,7 @@ cd lisk-node
 1. We currently support running either the `op-geth` or the `op-reth` nodes alongside the `op-node`. By default, we run the `op-geth` node. If you would like to run the `op-reth` client, please set the `CLIENT` environment variable to `reth` before starting the node.
     > **Note**:
     > - The `op-reth` client can be built in either the `maxperf` (default) or `release` profile. To learn more about them, please check reth's documentation on [Optimizations](https://github.com/paradigmxyz/reth/blob/main/book/installation/source.md#optimizations). Please set the `RETH_BUILD_PROFILE` environment variable accordingly.
-    > - Unless you are building the `op-reth` client in `maxperf` profile, please ensure that you have a machine with 32 GB RAM.
+    > - Unless you are building the `op-reth` client in `release` profile, please ensure that you have a machine with 32 GB RAM.
     > - Additionally, if you have the Docker Desktop installed on your system, please make sure to set `Memory limit` to a minimum of `16 GB`.<br>It can be set under `Settings -> Resources -> Resource Allocation -> Memory limit`.
 
 1. Run:
