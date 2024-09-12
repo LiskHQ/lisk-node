@@ -36,7 +36,7 @@ RUN RUSTFLAGS="-C target-cpu=native" cargo build --bin op-reth --locked --featur
 
 FROM ubuntu:22.04
 
-ARG PROFILE=release
+ARG PROFILE=maxperf
 
 RUN apt-get update && \
     apt-get install -y jq curl supervisor && \
