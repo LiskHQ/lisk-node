@@ -29,7 +29,6 @@
   "seq_window_size": 3600,
   "batch_inbox_address": "0xff00000000000000000000000000000000004202",
   "max_sequencer_drift": 600,
-  "channel_timeout_granite": 50,
   "deposit_contract_address": "0xe3d90f21490686ec7ef37be788e02dfc12787264",
   "l1_system_config_address": "0xf54791059df4a12ba461b881b4080ae81a1d0ac0",
   "protocol_versions_address": "0x0000000000000000000000000000000000000000"
