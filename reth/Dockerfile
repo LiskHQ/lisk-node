@@ -16,7 +16,7 @@ RUN git apply op-node-lisk-hotfix.patch && \
     cd op-node && \
     make VERSION=$VERSION op-node
 
-FROM rust:1.80 AS reth
+FROM rust:1.81 AS reth
 
 ARG FEATURES=jemalloc,asm-keccak,optimism
 ARG PROFILE=maxperf
@@ -26,13 +26,13 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/paradigmxyz/reth.git
-ENV VERSION=v1.0.6
-ENV COMMIT=c228fe15808c3acbf18dc3af1a03ef5cbdcda07a
+ENV VERSION=v1.0.7
+ENV COMMIT=75b7172cf77eb4fd65fe1a6924f75066fb09fcd1
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
-RUN RUSTFLAGS="-C target-cpu=native" cargo build --bin op-reth --locked --features $FEATURES --profile $PROFILE
+RUN RUSTFLAGS="-C target-cpu=native" cargo build --bin op-reth --locked --features $FEATURES --profile $PROFILE --manifest-path crates/optimism/bin/Cargo.toml
 
 FROM ubuntu:22.04
 
