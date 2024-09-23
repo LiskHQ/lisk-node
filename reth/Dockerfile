@@ -3,8 +3,8 @@ FROM golang:1.21 AS op
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.9.1
-ENV COMMIT=4797ddb70e05d4952685bad53e608cb5606284e6
+ENV VERSION=v1.9.2
+ENV COMMIT=224c5fd65cb4e8204258291e74263c1e70466176
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
