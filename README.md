@@ -11,20 +11,15 @@ This repository contains information on how to run your own node on the Lisk net
 
 ## System requirements
 
-The following system requirements are recommended to run a Lisk L2 node.
+We recommend you the following hardware configuration to run a Lisk L2 node:
 
-### Memory
+- a modern multi-core CPU with good single-core performance
+- a minimum of 16 GB RAM (32 GB recommended)
+- a locally attached NVMe SSD drive
+- adequate storage capacity to accommodate both the snapshot restoration process (if restoring from snapshot) and chain data, ensuring a minimum of (2 \* current_chain_size) + snapshot_size + 20%\_buffer
+- if running with docker, please install Docker Engine version [27.0.1](https://docs.docker.com/engine/release-notes/27.0/) or higher
 
-- Modern multi-core CPU with good single-core performance
-- Machines with a minimum of 16 GB RAM (32 GB recommended)
-
-### Storage
-
-- Machines with a high performance SSD drive with at least 750GB (full node) or 4.5TB (archive node) free
-
-### Docker
-
-- Docker Engine version [27.0.1](https://docs.docker.com/engine/release-notes/27.0/) or higher
+**Note:** If utilizing Amazon Elastic Block Store (EBS), ensure timing buffered disk reads are fast enough in order to avoid latency issues alongside the rate of new blocks added to Base during the initial synchronization process; `io2 block express` is recommended.
 
 ## Supported networks
 
@@ -49,7 +44,7 @@ cd lisk-node
 
 1. Ensure you have an Ethereum L1 full node RPC available (not Lisk), and set the `OP_NODE_L1_ETH_RPC` and the `OP_NODE_L1_BEACON` variables (within the `.env.*` files, if using docker-compose). If running your own L1 node, it needs to be synced before the Lisk node will be able to fully sync.
 
-1. Please ensure that the environment file relevant to your network (`.env.sepolia`, or `.env.mainnet`) is set for the `env_file` properties within `docker-compose.yml`. By default, it is set to `.env.mainnet`.
+1. Please ensure that the environment file relevant to your network (`.env.sepolia`, or `.env.mainnet`) is set for the `env_file` properties at two places within `docker-compose.yml`. By default, it is set to `.env.mainnet`.
 
 1. We currently support running either the `op-geth` or the `op-reth` nodes alongside the `op-node`. By default, we run the `op-geth` node. If you would like to run the `op-reth` client, please set the `CLIENT` environment variable to `reth` before starting the node.
     > **Note**:
@@ -64,7 +59,7 @@ cd lisk-node
     ```
     or, with `op-reth`:
     ```sh
-    CLIENT=reth RETH_BUILD_PROFILE=release docker compose up --build --detach
+    CLIENT=reth RETH_BUILD_PROFILE=maxperf docker compose up --build --detach
     ```
 
 1. You should now be able to `curl` your Lisk node:
@@ -80,7 +75,7 @@ cd lisk-node
 - Before proceeding, please make sure to install the following dependency (**this information is missing in the OP documentations linked below**):
   - [jq](https://jqlang.github.io/jq/)
 
-- To build `op-node` and `op-geth` from source, follow the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
+- To build `op-node` and `op-geth` from source, follow OP documentation on [Building a Node from Source](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
   - Before building the `op-node`, please patch the code with [`lisk-hotfix.patch`](./op-node-lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted on Lisk Sepolia, resulting in errors on the Lisk nodes.
     ```sh
     git apply <path-to-lisk-hotfix.patch>
