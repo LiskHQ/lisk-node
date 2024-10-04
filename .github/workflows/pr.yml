@@ -4,57 +4,53 @@ on:
   pull_request:
 
 jobs:
-  amd64:
+  linux_amd64:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - arch: linux/amd64
-            file: geth/Dockerfile
+          - file: geth/Dockerfile
             features: 
-          - arch: linux/amd64
-            file: reth/Dockerfile
+          - file: reth/Dockerfile
             features: jemalloc,asm-keccak,optimism
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build the Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ${{ matrix.file }}
           push: false
           build-args: |
             FEATURES=${{ matrix.features }}
-          platforms: ${{ matrix.arch }}
-  arm64:
+          platforms: linux/amd64
+  linux_arm64:
     runs-on: linux-arm64
     strategy:
       matrix:
         include:
-          - arch: linux/arm64
-            file: geth/Dockerfile
+          - file: geth/Dockerfile
             features: 
-          - arch: linux/arm64
-            file: reth/Dockerfile
+          - file: reth/Dockerfile
             features: jemalloc,optimism
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build the Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ${{ matrix.file }}
           push: false
           build-args: |
             FEATURES=${{ matrix.features }}
-          platforms: ${{ matrix.arch }}
+          platforms: linux/arm64
