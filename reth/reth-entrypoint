@@ -44,4 +44,5 @@ exec ./op-reth node \
     --disable-discovery \
     --port="$P2P_PORT" \
     --rollup.sequencer-http=$SEQUENCER_HTTP \
-    --rollup.disable-tx-pool-gossip
+    --rollup.disable-tx-pool-gossip \
+    --engine.experimental
