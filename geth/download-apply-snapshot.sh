@@ -13,14 +13,17 @@ if [[ "$APPLY_SNAPSHOT" == "FALSE" ]]; then
   exit 0
 fi
 
-if [[ "${SNAPSHOT_URL-x}" == x || -z $SNAPSHOT_URL ]]; then
-  echo "APPLY_SNAPSHOT enabled but SNAPSHOT_URL is undefined"
+if [[ "${GETH_DATA_DIR-x}" == x ]]; then
+  echo "GETH_DATA_DIR is undefined"
   exit 1
 fi
 
-if [[ "${GETH_DATA_DIR-x}" == x ]]; then
-  echo "GETH_DATA_DIR is undefined"
-  exit 2
+if [[ "${SNAPSHOT_URL-x}" == x || -z $SNAPSHOT_URL ]]; then
+  readonly SNAPSHOT_URL_BASE="https://snapshots.lisk.com/$SNAPSHOT_NETWORK"
+  readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location $SNAPSHOT_URL_BASE/latest-$SNAPSHOT_TYPE)
+  readonly SNAPSHOT_URL="$SNAPSHOT_URL_BASE/$LATEST_SNAPSHOT_NAME"
+
+  echo "SNAPSHOT_URL not specified; automatically resolved to $SNAPSHOT_URL"
 fi
 
 readonly SNAPSHOT_DIR=./snapshot

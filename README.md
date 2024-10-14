@@ -224,20 +224,34 @@ Refer to the `op-node` configuration [documentation](https://docs.optimism.io/bu
 
 ## Snapshots
 
-> **Note**: Currently, snapshots are only available for the `op-geth` client and are **NOT** regularly updated. We are currently working on improving this.
+> **Note**:
+> - Snapshots are only available for the `op-geth` client and are from an archival node. They are of two types:
+>   - `export`: small download size, slow to restore from, data is verified during restore
+>   - `datadir`: large download size, fast to restore from, no data verification during restore
 
 ### Docker
 
-To enable auto-snapshot download and application, please set the `APPLY_SNAPSHOT` environment variable to `true` when starting the node.
+To enable auto-snapshot download and application, please set the `APPLY_SNAPSHOT` environment variable to `true`, when starting the node.
 ```sh
 APPLY_SNAPSHOT=true docker compose up --build --detach
+```
+
+To choose the snapshot type, please set the `SNAPSHOT_TYPE` flag to either `export` (default) or `datadir`, when starting the node.
+```sh
+APPLY_SNAPSHOT=true SNAPSHOT_TYPE=export docker compose up --build --detach
+```
+
+You can also download and apply a snapshot from a custom URL by setting the `SNAPSHOT_URL` environment variable.
+Please make sure the snapshot file ends with `*.tar.gz`.
+```sh
+APPLY_SNAPSHOT=true SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build --detach
 ```
 
 ### Source
 
 Please follow the steps below:
 
-- Download the snapshot and the corresponding checksum from. The latest snapshot is always named `geth-snapshot`:
+- Download the snapshot and the corresponding checksum from. The latest snapshot name is always listed in the `latest-<export|datadir>` file:
   - Sepolia: https://snapshots.lisk.com/sepolia
   - Mainnet: https://snapshots.lisk.com/mainnet
 
@@ -246,10 +260,16 @@ Please follow the steps below:
   sha256sum -c <checksum-file-name>
   ```
 
-- Import the snapshot
-  ```sh
-  ./build/bin/geth import --datadir=$GETH_DATA_DIR <path-to-snapshot>
-  ```
+- Import the snapshot:
+  - `export`:
+    ```sh
+    tar -xf <path-to-downloaded-export-snapshot-tarball>
+    ./build/bin/geth import --datadir=$GETH_DATA_DIR <path-to-extracted-export-snapshot>
+    ```
+  - `datadir`:
+    ```sh
+    tar --directory $GETH_DATA_DIR -xf <path-to-datadir-snapshot>
+    ```
 
 ## Syncing
 
