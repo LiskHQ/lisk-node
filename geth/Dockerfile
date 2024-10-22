@@ -1,10 +1,10 @@
-FROM golang:1.21 AS op
+FROM golang:1.22 AS op
 
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.9.3
-ENV COMMIT=e81c50de0a51954c64444b849be4768c8116cffb
+ENV VERSION=v1.9.4
+ENV COMMIT=2c24e652161187f3e30045eac1e176e6b53c469d
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
@@ -16,13 +16,13 @@ RUN git apply op-node-lisk-hotfix.patch && \
     cd op-node && \
     make VERSION=$VERSION op-node
 
-FROM golang:1.21 AS geth
+FROM golang:1.22 AS geth
 
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/op-geth.git
-ENV VERSION=v1.101408.0
-ENV COMMIT=5c2e75862239c77d2873de1888ba52ee84c83178
+ENV VERSION=v1.101411.0
+ENV COMMIT=d5a96613c22bc46238a21d6c0f805399c26c9d4c
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
