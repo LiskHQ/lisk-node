@@ -153,8 +153,7 @@ Navigate to your `op-geth` directory and start service by running the command:
     --rollup.sequencerhttp=SEQUENCER_HTTP \
     --rollup.halt=major \
     --port=30303 \
-    --rollup.disabletxpoolgossip=true \
-    --engine.experimental
+    --rollup.disabletxpoolgossip=true
 ```
 
 Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-geth) for detailed information about available options.
