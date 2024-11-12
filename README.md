@@ -53,11 +53,16 @@ cd lisk-node
     > - Additionally, if you have the Docker Desktop installed on your system, please make sure to set `Memory limit` to a minimum of `16 GB`.<br>It can be set under `Settings -> Resources -> Resource Allocation -> Memory limit`.
 
 1. Run:
-    <br>with `op-geth`:
+    <br>**IMPORTANT**: To run the node on Lisk Sepolia, first patch the Dockerfile(s) with:
+    ```sh
+    git apply dockerfile-lisk-sepolia.patch
+    ```
+
+    <br>with `op-geth` execution client:
     ```sh
     docker compose up --build --detach
     ```
-    or, with `op-reth`:
+    or, with `op-reth` execution client:
     ```sh
     CLIENT=reth RETH_BUILD_PROFILE=maxperf docker compose up --build --detach
     ```
