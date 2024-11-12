@@ -9,11 +9,7 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
-# Patch to handle the legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
-# Emitted only on Lisk Sepolia from the SystemConfig contract
-COPY op-node-lisk-hotfix.patch .
-RUN git apply op-node-lisk-hotfix.patch && \
-    cd op-node && \
+RUN cd op-node && \
     make VERSION=$VERSION op-node
 
 FROM golang:1.22 AS geth
