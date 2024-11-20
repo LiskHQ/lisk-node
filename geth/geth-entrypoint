@@ -19,11 +19,10 @@ ADDITIONAL_ARGS=""
 OP_GETH_GCMODE="${OP_GETH_GCMODE:-full}"
 OP_GETH_SYNCMODE="${OP_GETH_SYNCMODE:-full}"
 
-# TODO: Enable this check once Lisk configs are added to the superchain registry repo
-# if [[ -z "$OP_NODE_NETWORK" ]]; then
-#     echo "expected OP_NODE_NETWORK to be set" 1>&2
-#     exit 1
-# fi
+if [[ -z "$OP_NODE_NETWORK" ]]; then
+    echo "expected OP_NODE_NETWORK to be set" 1>&2
+    exit 1
+fi
 
 # Ensure data directory exists
 mkdir -p $GETH_DATA_DIR
@@ -62,6 +61,7 @@ fi
 echoBanner "Starting op-geth execution node..."
 ./geth \
     --datadir="$GETH_DATA_DIR" \
+    --op-network="$OP_NODE_NETWORK" \
     --verbosity="$VERBOSITY" \
     --authrpc.addr=0.0.0.0 \
     --authrpc.port="$AUTHRPC_PORT" \
@@ -89,6 +89,3 @@ echoBanner "Starting op-geth execution node..."
     --rollup.halt=major \
     --rollup.disabletxpoolgossip=true \
     $ADDITIONAL_ARGS # intentionally unquoted
-
-# Add the following flag(s) after Lisk is added to the Superchain Registry
-    # --op-network="$OP_NODE_NETWORK"
