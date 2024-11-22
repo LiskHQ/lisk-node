@@ -27,10 +27,6 @@ fi
 # Ensure data directory exists
 mkdir -p $GETH_DATA_DIR
 
-# Init genesis
-echoBanner "Initializing data directory under '${GETH_DATA_DIR}'"
-./geth init --datadir=$GETH_DATA_DIR "$GENESIS_FILE_PATH"
-
 # Download and apply snapshot, when configured
 (. download-apply-snapshot.sh)
 
