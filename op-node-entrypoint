@@ -54,4 +54,5 @@ echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
 # Start service
 echoBanner "Starting op-node..."
 exec ./op-node \
-  --network="$OP_NODE_NETWORK"
+  --network="$OP_NODE_NETWORK" \
+  --override.holocene=1732633200

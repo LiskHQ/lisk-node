@@ -84,4 +84,5 @@ echoBanner "Starting op-geth execution node..."
     --rollup.sequencerhttp="$SEQUENCER_HTTP" \
     --rollup.halt=major \
     --rollup.disabletxpoolgossip=true \
+    --override.holocene=1732633200 \
     $ADDITIONAL_ARGS # intentionally unquoted
