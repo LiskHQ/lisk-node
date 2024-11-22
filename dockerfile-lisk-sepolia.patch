@@ -9,8 +9,8 @@ index 7316271..86e9a33 100644
 -RUN cd op-node && \
 +# Patch to handle the legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
 +# Emitted only on Lisk Sepolia from the SystemConfig contract
-+COPY op-node-lisk-hotfix.patch .
-+RUN git apply op-node-lisk-hotfix.patch && \
++COPY op-node-lisk-sepolia.patch .
++RUN git apply op-node-lisk-sepolia.patch && \
 +    cd op-node && \
      make VERSION=$VERSION op-node
  
@@ -26,8 +26,8 @@ index 0144140..bbb833f 100644
 -RUN cd op-node && \
 +# Patch to handle the legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
 +# Emitted only on Lisk Sepolia from the SystemConfig contract
-+COPY op-node-lisk-hotfix.patch .
-+RUN git apply op-node-lisk-hotfix.patch && \
++COPY op-node-lisk-sepolia.patch .
++RUN git apply op-node-lisk-sepolia.patch && \
 +    cd op-node && \
      make VERSION=$VERSION op-node
  

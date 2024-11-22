@@ -82,9 +82,9 @@ cd lisk-node
   - [jq](https://jqlang.github.io/jq/)
 
 - To build `op-node` and `op-geth` from source, follow OP documentation on [Building a Node from Source](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
-  - Before building the `op-node`, please patch the code with [`op-node-lisk-hotfix.patch`](./op-node-lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted on Lisk Sepolia, resulting in errors on the Lisk nodes.
+  - Before building the `op-node`, please patch the code with [`op-node-lisk-sepolia.patch`](./op-node-lisk-sepolia.patch) for an unhandled `SystemConfig` event emitted on Lisk Sepolia, resulting in errors on the Lisk nodes.
     ```sh
-    git apply <path-to-op-node-lisk-hotfix.patch>
+    git apply <path-to-op-node-lisk-sepolia.patch>
     ```
 
 - To build `op-reth` from source, follow the reth official [documentation](https://reth.rs/run/optimism.html#installing-op-reth).
