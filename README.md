@@ -107,20 +107,6 @@ openssl rand -hex 32 > jwt.txt
 
 For more information refer to the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/mainnet#create-a-jwt-secret).
 
-#### Initialize op-geth
-
-> **Important**: If you already had your node running prior to the Fjord upgrade (Sepolia: May 29, 2024 & Mainnet: July 10, 2024), please make sure to re-initialize your data directory with the updated genesis block. This is automatically taken care of for the Docker users.
-
-Navigate to your `op-geth` directory and initialize the service by running the command:
-
-```sh
-./build/bin/geth init --datadir=$DATADIR_PATH PATH_TO_NETWORK_GENESIS_FILE
-```
-
-> **Note**:
-> - Alternatively, this initialization step can be skipped by specifying `--op-network=OP_NODE_NETWORK` flag in the start commands below.
-> - This flag automatically fetches the necessary information from the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry).
-
 #### Run op-geth
 
 Navigate to your `op-geth` directory and start service by running the command:
