@@ -24,7 +24,7 @@ echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
 echoBanner "Starting op-reth execution node under '${RETH_DATA_DIR}'..."
 exec ./op-reth node \
     -vvv \
-    --chain="$RETH_CHAIN" \
+    --chain="$GENESIS_FILE_PATH" \
     --datadir="$RETH_DATA_DIR" \
     --log.stdout.format log-fmt \
     --authrpc.addr=0.0.0.0 \
@@ -44,5 +44,4 @@ exec ./op-reth node \
     --disable-discovery \
     --port="$P2P_PORT" \
     --rollup.sequencer-http=$SEQUENCER_HTTP \
-    --rollup.disable-tx-pool-gossip \
-    --engine.experimental
+    --rollup.disable-tx-pool-gossip

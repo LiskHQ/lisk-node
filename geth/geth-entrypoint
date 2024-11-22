@@ -56,8 +56,8 @@ fi
 # Start service
 echoBanner "Starting op-geth execution node..."
 ./geth \
-    --datadir="$GETH_DATA_DIR" \
     --op-network="$OP_NODE_NETWORK" \
+    --datadir="$GETH_DATA_DIR" \
     --verbosity="$VERBOSITY" \
     --authrpc.addr=0.0.0.0 \
     --authrpc.port="$AUTHRPC_PORT" \

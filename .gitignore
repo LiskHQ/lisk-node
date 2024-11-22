@@ -1,5 +1,6 @@
 # Environment files
 .env*
+!.env
 !.env.mainnet
 !.env.sepolia
 

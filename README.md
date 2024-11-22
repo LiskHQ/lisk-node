@@ -31,7 +31,8 @@ We recommend you the following hardware configuration to run a Lisk L2 node:
 ## Usage
 
 > **Note**:
-> - It is currently not possible to run the nodes with the `--op-network` flag.
+> - It is now possible to run the Lisk nodes with the `--op-network` flag on the op-geth execution client.
+> - It is still not possible to run the Lisk nodes with the `--chain` flag on the op-reth execution client.
 
 ### Clone the Repository
 
@@ -81,9 +82,9 @@ cd lisk-node
   - [jq](https://jqlang.github.io/jq/)
 
 - To build `op-node` and `op-geth` from source, follow OP documentation on [Building a Node from Source](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
-  - Before building the `op-node`, please patch the code with [`lisk-hotfix.patch`](./op-node-lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted on Lisk Sepolia, resulting in errors on the Lisk nodes.
+  - Before building the `op-node`, please patch the code with [`op-node-lisk-hotfix.patch`](./op-node-lisk-hotfix.patch) for an unhandled `SystemConfig` event emitted on Lisk Sepolia, resulting in errors on the Lisk nodes.
     ```sh
-    git apply <path-to-lisk-hotfix.patch>
+    git apply <path-to-op-node-lisk-hotfix.patch>
     ```
 
 - To build `op-reth` from source, follow the reth official [documentation](https://reth.rs/run/optimism.html#installing-op-reth).
@@ -126,14 +127,9 @@ Navigate to your `op-geth` directory and start service by running the command:
 
 ```sh
 ./build/bin/geth \
+    --op-network=$OP_NODE_NETWORK \
     --datadir=$DATADIR_PATH \
     --verbosity=3 \
-    --http \
-    --http.corsdomain="*" \
-    --http.vhosts="*" \
-    --http.addr=0.0.0.0 \
-    --http.port=8545 \
-    --http.api=web3,debug,eth,net,engine \
     --authrpc.addr=0.0.0.0 \
     --authrpc.port=8551 \
     --authrpc.vhosts="*" \
@@ -143,18 +139,23 @@ Navigate to your `op-geth` directory and start service by running the command:
     --ws.port=8546 \
     --ws.origins="*" \
     --ws.api=debug,eth,net,engine \
+    --http \
+    --http.corsdomain="*" \
+    --http.vhosts="*" \
+    --http.addr=0.0.0.0 \
+    --http.port=8545 \
+    --http.api=web3,debug,eth,net,engine \
     --metrics \
     --metrics.addr=0.0.0.0 \
     --metrics.port=6060 \
     --syncmode=full \
     --gcmode=full \
+    --port=30303 \
     --maxpeers=100 \
-    --nat=extip:0.0.0.0 \
     --rollup.sequencerhttp=SEQUENCER_HTTP \
     --rollup.halt=major \
-    --port=30303 \
     --rollup.disabletxpoolgossip=true \
-    --engine.experimental
+    --nat=extip:0.0.0.0
 ```
 
 Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-geth) for detailed information about available options.
@@ -202,12 +203,12 @@ Navigate to your `op-node` directory and start service by running the command:
 
 ```sh
 ./bin/op-node \
+  --network="$OP_NODE_NETWORK" \
   --l1=$OP_NODE_L1_ETH_RPC \
   --l1.rpckind=$OP_NODE_L1_RPC_KIND \
   --l1.beacon=$OP_NODE_L1_BEACON \
   --l2=ws://localhost:8551 \
-  --l2.jwt-secret=PATH_TO_JWT_TEXT_FILE \
-  --rollup.config=PATH_TO_NETWORK_ROLLUP_FILE
+  --l2.jwt-secret=PATH_TO_JWT_TEXT_FILE
 ```
 
 The above command starts `op-node` in **full sync** mode. Depending on the chain length, the initial sync process could take significant time; varying from days to weeks.
