@@ -1,24 +1,20 @@
+Subject: [PATCH] Lisk Sepolia patch
+---
+Index: op-node/rollup/derive/system_config.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
 diff --git a/op-node/rollup/derive/system_config.go b/op-node/rollup/derive/system_config.go
-index 72c4e713c..c8141d514 100644
---- a/op-node/rollup/derive/system_config.go
-+++ b/op-node/rollup/derive/system_config.go
-@@ -21,7 +21,8 @@ var (
- 	SystemConfigUpdateFeeScalars        = common.Hash{31: 1}
- 	SystemConfigUpdateGasLimit          = common.Hash{31: 2}
- 	SystemConfigUpdateUnsafeBlockSigner = common.Hash{31: 3}
--	SystemConfigUpdateEIP1559Params     = common.Hash{31: 4}
-+	SystemConfigUpdateGasConfigEcotone  = common.Hash{31: 4}
-+	SystemConfigUpdateEIP1559Params     = common.Hash{31: 5}
- )
-
- var (
-@@ -160,6 +161,9 @@ func ProcessSystemConfigUpdateLogEvent(destSysCfg *eth.SystemConfig, ev *types.L
- 	case SystemConfigUpdateUnsafeBlockSigner:
- 		// Ignored in derivation. This configurable applies to runtime configuration outside of the derivation.
+--- a/op-node/rollup/derive/system_config.go	(revision bd0ef87f20bc2575c060571b92de9b4ce249fac5)
++++ b/op-node/rollup/derive/system_config.go	(revision 8c0a1fc612c062a61253cb2763796f1bffe95e89)
+@@ -142,6 +142,9 @@
+ 		destSysCfg.GasLimit = gasLimit
  		return nil
-+	case SystemConfigUpdateGasConfigEcotone:
-+		// HOTFIX: Ignore legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
-+		return nil
- 	default:
- 		return fmt.Errorf("unrecognized L1 sysCfg update type: %s", updateType)
- 	}
+ 	case SystemConfigUpdateEIP1559Params:
++		if !rollupCfg.IsHolocene(l1Time) {
++			return nil // ignore event prior to Holocene
++		}
+ 		if pointer, err := solabi.ReadUint64(reader); err != nil || pointer != 32 {
+ 			return NewCriticalError(errors.New("invalid pointer field"))
+ 		}
