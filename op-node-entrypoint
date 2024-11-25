@@ -7,6 +7,8 @@ echoBanner() {
 	echo -e "------------------------------------------------------------------------------------------------------------\n"
 }
 
+[ "$OP_NODE_NETWORK" = lisk-sepolia ] && ADDITIONAL_ARGS="--override.holocene=1732633200" || ADDITIONAL_ARGS=""
+
 get_public_ip() {
   # Define a list of HTTP-based providers
   local PROVIDERS=(
@@ -55,4 +57,4 @@ echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
 echoBanner "Starting op-node..."
 exec ./op-node \
   --network="$OP_NODE_NETWORK" \
-  --override.holocene=1732633200
+  $ADDITIONAL_ARGS # intentionally unquoted
