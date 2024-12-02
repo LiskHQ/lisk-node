@@ -28,7 +28,7 @@ fi
 mkdir -p $GETH_DATA_DIR
 
 # Download and apply snapshot, when configured
-(. download-apply-snapshot.sh)
+(. download-apply-snapshot.sh) || echo "Unable to download and apply snapshot. Skipping snapshot application..."
 
 # Set the start flags
 echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"

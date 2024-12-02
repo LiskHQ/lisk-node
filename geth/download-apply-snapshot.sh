@@ -18,12 +18,33 @@ if [[ "${GETH_DATA_DIR-x}" == x ]]; then
   exit 1
 fi
 
-if [[ "${SNAPSHOT_URL-x}" == x || -z $SNAPSHOT_URL ]]; then
-  readonly SNAPSHOT_URL_BASE="https://snapshots.lisk.com/$SNAPSHOT_NETWORK"
-  readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location $SNAPSHOT_URL_BASE/latest-$SNAPSHOT_TYPE)
-  readonly SNAPSHOT_URL="$SNAPSHOT_URL_BASE/$LATEST_SNAPSHOT_NAME"
+# Snapshot base URLs
+readonly SNAPSHOT_BASE_URL_DEFAULT="https://snapshots.lisk.com"
+readonly SNAPSHOT_BASE_URL_ALTERNATE="https://s3.eu-west-3.amazonaws.com/snapshots.lisk.com"
 
+# Automatically resolve SNAPSHOT_URL, if not specified
+SNAPSHOT_URL="$SNAPSHOT_URL"
+if [[ "${SNAPSHOT_URL-x}" == x || -z $SNAPSHOT_URL ]];
+then
+  readonly SNAPSHOT_URL_BASE="$SNAPSHOT_BASE_URL_DEFAULT/$SNAPSHOT_NETWORK"
+  readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location $SNAPSHOT_URL_BASE/latest-$SNAPSHOT_TYPE)
+  SNAPSHOT_URL="$SNAPSHOT_URL_BASE/$LATEST_SNAPSHOT_NAME"
   echo "SNAPSHOT_URL not specified; automatically resolved to $SNAPSHOT_URL"
+fi
+
+# Update SNAPSHOT_URL to alternate URL, if it uses the default base URL and it doesn't respond
+readonly http_code=$(curl -o /dev/null --silent -Iw '%{http_code}' $SNAPSHOT_URL)
+if [[ "$http_code" != "200" ]];
+then
+  echo "Unable to access $SNAPSHOT_URL"
+  if [[ $SNAPSHOT_URL =~ $SNAPSHOT_BASE_URL_DEFAULT ]];
+  then
+    readonly SNAPSHOT_URL=$(echo "${SNAPSHOT_URL/$SNAPSHOT_BASE_URL_DEFAULT/$SNAPSHOT_BASE_URL_ALTERNATE}")
+    echo "Updating SNAPSHOT_URL to $SNAPSHOT_URL"
+  else
+    echo "Try using the official URL instead. Exiting snapshot download & application..."
+    exit 2
+  fi
 fi
 
 readonly SNAPSHOT_DIR=./snapshot
