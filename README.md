@@ -2,8 +2,8 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 ![GitHub repo size](https://img.shields.io/github/repo-size/liskhq/lisk-node)
-![GitHub issues](https://img.shields.io/github/issues-raw/liskhq/lisk-node)
-![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/liskhq/lisk-node)
+[![GitHub issues](https://img.shields.io/github/issues-raw/liskhq/lisk-node)](https://github.com/LiskHQ/lisk-node/issues?q=is%3Aopen+is%3Aissue)
+[![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/liskhq/lisk-node)](https://github.com/LiskHQ/lisk-node/issues?q=is%3Aissue+is%3Aclosed)
 
 Lisk provides a cost-efficient, fast, and scalable Layer 2 (L2) network based on [Optimism (OP)](https://stack.optimism.io/) that is secured by Ethereum.
 
