@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - LISK-1402-Publish-docker-images-to-ECR
 
 jobs:
   docker:
@@ -29,14 +30,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker image
-        id: docker-image
+      - name: Docker image - Mainnet
+        id: docker-image-mainnet
         run: |
           echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}" >> $GITHUB_OUTPUT
 
-      - name: Build and push the image
+      - name: Docker image - Sepolia
+        id: docker-image-sepolia
+        run: |
+          echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_SEPOLIA }}" >> $GITHUB_OUTPUT
+
+      - name: Build and push image for Lisk Mainnet
         uses: docker/build-push-action@v6
-        id: docker-build
+        id: docker-build-mainnet
         with:
           context: ./
           file: ./reth/Dockerfile
@@ -46,5 +52,24 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ steps.docker-image.outputs.image }}:latest
-            ${{ steps.docker-image.outputs.image }}:${{ github.sha }}
+            ${{ steps.docker-image-mainnet.outputs.image }}:latest
+            ${{ steps.docker-image-mainnet.outputs.image }}:${{ github.sha }}
+
+      - name: Apply Lisk Sepolia hotfix
+        id: apply-sepolia-hotfix
+        run: git apply ./dockerfile-lisk-sepolia.patch
+
+      - name: Build and push image for Lisk Sepolia
+        uses: docker/build-push-action@v6
+        id: docker-build-sepolia
+        with:
+          context: ./
+          file: ./reth/Dockerfile
+          build-args: |
+            FEATURES=jemalloc,asm-keccak,optimism
+            RETH_BUILD_PROFILE=maxperf
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ steps.docker-image-sepolia.outputs.image }}:latest
+            ${{ steps.docker-image-sepolia.outputs.image }}:${{ github.sha }}
