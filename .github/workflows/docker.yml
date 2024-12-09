@@ -4,17 +4,21 @@ on:
   push:
     branches:
       - main
+      - LISK-1402-Publish-docker-images-to-ECR
 
 env:
   DOCKER_BUILD_PLATFORMS: linux/amd64
   RETH_FEATURES: jemalloc,asm-keccak,optimism
-  RETH_BUILD_PROFILE: maxperf
+  RETH_BUILD_PROFILE: release
 
 jobs:
   docker_prep:
     name: Build and push docker image
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
+    strategy:
+      matrix:
+        network: [mainnet, sepolia]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,38 +37,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker image - Mainnet
-        id: docker-image-mainnet
+      - name: Docker image
+        id: docker-image
         run: |
-          echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}" >> $GITHUB_OUTPUT
-
-      - name: Docker image - Sepolia
-        id: docker-image-sepolia
-        run: |
-          echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_SEPOLIA }}" >> $GITHUB_OUTPUT
-
-      - name: Build and push image for Lisk Mainnet
-        uses: docker/build-push-action@v6
-        id: docker-build-mainnet
-        with:
-          context: .
-          file: reth/Dockerfile
-          build-args: |
-            FEATURES=${{ env.RETH_FEATURES }}
-            RETH_BUILD_PROFILE=${{ env.RETH_BUILD_PROFILE }}
-          platforms: ${{ env.DOCKER_BUILD_PLATFORMS }}
-          push: true
-          tags: |
-            ${{ steps.docker-image-mainnet.outputs.image }}:latest
-            ${{ steps.docker-image-mainnet.outputs.image }}:${{ github.sha }}
+          if [ "${{ matrix.network }}" = "mainnet" ];
+          then
+            echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}" >> $GITHUB_OUTPUT
+          else
+            echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_SEPOLIA }}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Apply Lisk Sepolia hotfix
         id: apply-sepolia-hotfix
+        if: ${{ matrix.network == 'sepolia' }}
         run: git apply ./dockerfile-lisk-sepolia.patch
 
-      - name: Build and push image for Lisk Sepolia
+      - name: Build and push image
         uses: docker/build-push-action@v6
-        id: docker-build-sepolia
+        id: docker-build
         with:
           context: .
           file: reth/Dockerfile
@@ -74,5 +64,5 @@ jobs:
           platforms: ${{ env.DOCKER_BUILD_PLATFORMS }}
           push: true
           tags: |
-            ${{ steps.docker-image-sepolia.outputs.image }}:latest
-            ${{ steps.docker-image-sepolia.outputs.image }}:${{ github.sha }}
+            ${{ steps.docker-image.outputs.image }}:latest
+            ${{ steps.docker-image.outputs.image }}:${{ github.sha }}
