@@ -10,7 +10,7 @@ jobs:
       matrix:
         include:
           - file: geth/Dockerfile
-            features: 
+            features:
           - file: reth/Dockerfile
             features: jemalloc,asm-keccak,optimism
     steps:
@@ -35,7 +35,7 @@ jobs:
       matrix:
         include:
           - file: geth/Dockerfile
-            features: 
+            features:
           - file: reth/Dockerfile
             features: jemalloc,optimism
     steps:
