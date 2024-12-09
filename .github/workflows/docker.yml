@@ -6,9 +6,14 @@ on:
       - main
       - LISK-1402-Publish-docker-images-to-ECR
 
+env:
+  DOCKER_BUILD_PLATFORMS: linux/amd64
+  RETH_FEATURES: jemalloc,asm-keccak,optimism
+  RETH_BUILD_PROFILE: release
+
 jobs:
-  docker:
-    name: Build and push docker image
+  docker_prep:
+    name: Pre-prep for docker image build
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
 
@@ -44,12 +49,12 @@ jobs:
         uses: docker/build-push-action@v6
         id: docker-build-mainnet
         with:
-          context: ./
-          file: ./reth/Dockerfile
+          context: .
+          file: reth/Dockerfile
           build-args: |
-            FEATURES=jemalloc,asm-keccak,optimism
-            RETH_BUILD_PROFILE=maxperf
-          platforms: linux/amd64
+            FEATURES=${{ env.RETH_FEATURES }}
+            RETH_BUILD_PROFILE=${{ env.RETH_BUILD_PROFILE }}
+          platforms: ${{ env.DOCKER_BUILD_PLATFORMS }}
           push: true
           tags: |
             ${{ steps.docker-image-mainnet.outputs.image }}:latest
@@ -63,12 +68,12 @@ jobs:
         uses: docker/build-push-action@v6
         id: docker-build-sepolia
         with:
-          context: ./
-          file: ./reth/Dockerfile
+          context: .
+          file: reth/Dockerfile
           build-args: |
-            FEATURES=jemalloc,asm-keccak,optimism
-            RETH_BUILD_PROFILE=maxperf
-          platforms: linux/amd64
+            FEATURES=${{ env.RETH_FEATURES }}
+            RETH_BUILD_PROFILE=${{ env.RETH_BUILD_PROFILE }}
+          platforms: ${{ env.DOCKER_BUILD_PLATFORMS }}
           push: true
           tags: |
             ${{ steps.docker-image-sepolia.outputs.image }}:latest
