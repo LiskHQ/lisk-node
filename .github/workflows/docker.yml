@@ -4,19 +4,17 @@ on:
   push:
     branches:
       - main
-      - LISK-1402-Publish-docker-images-to-ECR
 
 env:
   DOCKER_BUILD_PLATFORMS: linux/amd64
   RETH_FEATURES: jemalloc,asm-keccak,optimism
-  RETH_BUILD_PROFILE: release
+  RETH_BUILD_PROFILE: maxperf
 
 jobs:
   docker_prep:
-    name: Pre-prep for docker image build
+    name: Build and push docker image
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
