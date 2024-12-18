@@ -2,6 +2,7 @@ FROM golang:1.22 AS op
 
 WORKDIR /app
 
+RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
 ENV VERSION=v1.10.2
 ENV COMMIT=8bf7ff60f34a7c5082cec5c56bed1f76cc1893ad
