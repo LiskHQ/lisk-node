@@ -23,10 +23,10 @@ We recommend you the following hardware configuration to run a Lisk L2 node:
 
 ## Supported networks
 
-| Network      | Status |
-| ------------ | ------ |
-| Lisk Sepolia | ✅     |
-| Lisk Mainnet | ✅     |
+| Lisk Network      | Status |
+| ----------------- | ------ |
+| Sepolia (Testnet) | ✅     |
+| Mainnet           | ✅     |
 
 ## Usage
 
@@ -94,7 +94,7 @@ cd lisk-node
 Set the following environment variable:
 
 ```
-export DATADIR_PATH=... # Path to the folder where geth data will be stored
+export DATADIR_PATH=... # Path to the folder where the execution node (op-geth or op-reth) data will be stored
 ```
 
 #### Create a JWT Secret
@@ -151,7 +151,7 @@ Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/bu
 Navigate to your `reth` directory and start service by running the command:
 
 ```sh
-./target/release/op-reth node \
+./target/maxperf/op-reth node \
   -vvv \
   --chain=PATH_TO_NETWORK_GENESIS_FILE \
   --datadir="$DATADIR_PATH" \
@@ -179,7 +179,7 @@ Navigate to your `reth` directory and start service by running the command:
 Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node.html#reth-node) for detailed information about available options.
 
 > **Note**:
-> <br>Official Lisk Sequencer HTTP RPC:
+> <br>Official Lisk Sequencer HTTP RPC endpoints:
 > - **Lisk Sepolia**: https://rpc.sepolia-api.lisk.com
 > - **Lisk Mainnet**: https://rpc.api.lisk.com
 
@@ -260,7 +260,7 @@ Please follow the steps below:
     - `latest-geth-datadir` (larger download, faster restore without verification)
   - For op-reth:
     - `latest-reth-datadir` (datadir snapshot only)
-  
+
   Available at:
   - Sepolia: https://snapshots.lisk.com/sepolia
   - Mainnet: https://snapshots.lisk.com/mainnet
