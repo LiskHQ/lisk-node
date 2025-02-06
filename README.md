@@ -232,7 +232,7 @@ To enable auto-snapshot download and application, set the `APPLY_SNAPSHOT` envir
 APPLY_SNAPSHOT=true docker compose up --build --detach
 ```
 
-To specify the client and snapshot type, use the `CLIENT` and `SNAPSHOT_TYPE` variables:
+To specify the client and snapshot type, set both the `CLIENT` and `SNAPSHOT_TYPE` variables:
 ```sh
 # For op-geth with export snapshot (default)
 APPLY_SNAPSHOT=true CLIENT=geth SNAPSHOT_TYPE=export docker compose up --build --detach

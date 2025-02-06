@@ -9,18 +9,23 @@ set -u
 readonly APPLY_SNAPSHOT=$(echo "${APPLY_SNAPSHOT:-false}" | tr "[:lower:]" "[:upper:]")
 
 if [[ "$APPLY_SNAPSHOT" == "FALSE" ]]; then
-  echo "Automatic snapshot application disabled; to enable, set 'APPLY_SNAPSHOT=true' and restart"
+  echo "Error: Automatic snapshot application disabled; to enable, set 'APPLY_SNAPSHOT=true' and restart"
   exit 0
-fi
-
-if [[ "${RETH_DATA_DIR-x}" == x ]]; then
-  echo "RETH_DATA_DIR is undefined"
-  exit 1
 fi
 
 if [[ "${CLIENT}" != "reth" ]]; then
   echo "Error: this script is only for reth"
   exit 14
+fi
+
+if [[ "${SNAPSHOT_TYPE}" != "datadir" ]]; then
+  echo "Error: this script is only for datadir snapshots"
+  exit 15
+fi
+
+if [[ "${RETH_DATA_DIR-x}" == x ]]; then
+  echo "Error: RETH_DATA_DIR is undefined"
+  exit 1
 fi
 
 # Snapshot base URLs
@@ -47,7 +52,7 @@ then
     readonly SNAPSHOT_URL=$(echo "${SNAPSHOT_URL/$SNAPSHOT_BASE_URL_DEFAULT/$SNAPSHOT_BASE_URL_ALTERNATE}")
     echo "Updating SNAPSHOT_URL to $SNAPSHOT_URL"
   else
-    echo "Try using the official URL instead. Exiting snapshot download & application..."
+    echo "Error: Try using the official URL instead. Exiting snapshot download & application..."
     exit 2
   fi
 fi
@@ -57,12 +62,6 @@ readonly SNAPSHOT_REMOTE_FILENAME=$(basename ${SNAPSHOT_URL})
 readonly SNAPSHOT_SHA256_URL="${SNAPSHOT_URL}.SHA256"
 readonly SNAPSHOT_SHA256_FILENAME="${SNAPSHOT_REMOTE_FILENAME}.SHA256"
 readonly SNAPSHOT_DOWNLOAD_MAX_TRIES=3
-
-# Verify that the snapshot is a datadir snapshot
-if [[ $SNAPSHOT_REMOTE_FILENAME != *datadir*.tar.gz ]]; then
-  echo "Error: Reth only supports datadir snapshots. The provided snapshot appears to be an export snapshot."
-  exit 13
-fi
 
 # Clear any existing snapshots
 rm -rf $SNAPSHOT_DIR
@@ -86,12 +85,12 @@ download_and_verify(){
   elif command -v shasum &>/dev/null; then
     (cd $SNAPSHOT_DIR && shasum --algorithm 256 --check $SNAPSHOT_SHA256_FILENAME &>/dev/null)
   else
-    echo "Neither sha256sum nor shasum available. Skipping..."
+    echo "Error: Neither sha256sum nor shasum available. Skipping..."
     return 9
   fi
 
   if [[ "$?" != "0" ]]; then
-    echo "Snapshot is corrupted. Skipping snapshot application..."
+    echo "Error: Snapshot is corrupted. Skipping snapshot application..."
     return 10
   fi
 
@@ -111,6 +110,6 @@ rm -rf $SNAPSHOT_DIR
 if [[ "$SNAPSHOT_IMPORT_EXIT_CODE" == "0" ]]; then
   echo "Snapshot successfully imported"
 else
-  echo "Snapshot import failed. Skipping snapshot application..."
+  echo "Error: Snapshot import failed. Skipping snapshot application..."
   exit 12
 fi

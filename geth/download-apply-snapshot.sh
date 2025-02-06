@@ -9,18 +9,18 @@ set -u
 readonly APPLY_SNAPSHOT=$(echo "${APPLY_SNAPSHOT:-false}" | tr "[:lower:]" "[:upper:]")
 
 if [[ "$APPLY_SNAPSHOT" == "FALSE" ]]; then
-  echo "Automatic snapshot application disabled; to enable, set 'APPLY_SNAPSHOT=true' and restart"
+  echo "Error: Automatic snapshot application disabled; to enable, set 'APPLY_SNAPSHOT=true' and restart"
   exit 0
-fi
-
-if [[ "${GETH_DATA_DIR-x}" == x ]]; then
-  echo "GETH_DATA_DIR is undefined"
-  exit 1
 fi
 
 if [[ "${CLIENT}" != "geth" ]]; then
   echo "Error: this script is only for op-geth"
   exit 14
+fi
+
+if [[ "${GETH_DATA_DIR-x}" == x ]]; then
+  echo "Error: GETH_DATA_DIR is undefined"
+  exit 1
 fi
 
 # Snapshot base URLs
@@ -42,7 +42,7 @@ then
   fi
   
   if [[ -z "$LATEST_SNAPSHOT_NAME" ]]; then
-    echo "Failed to fetch snapshot name from both latest-${CLIENT}-${SNAPSHOT_TYPE} and latest-${SNAPSHOT_TYPE}"
+    echo "Error: Failed to fetch snapshot name from both latest-${CLIENT}-${SNAPSHOT_TYPE} and latest-${SNAPSHOT_TYPE}"
     exit 3
   fi
   
@@ -60,7 +60,7 @@ then
     readonly SNAPSHOT_URL=$(echo "${SNAPSHOT_URL/$SNAPSHOT_BASE_URL_DEFAULT/$SNAPSHOT_BASE_URL_ALTERNATE}")
     echo "Updating SNAPSHOT_URL to $SNAPSHOT_URL"
   else
-    echo "Try using the official URL instead. Exiting snapshot download & application..."
+    echo "Error: Try using the official URL instead. Exiting snapshot download & application..."
     exit 2
   fi
 fi
@@ -115,7 +115,7 @@ if [[ $SNAPSHOT_REMOTE_FILENAME == *.tar.gz && $SNAPSHOT_REMOTE_FILENAME != *dat
   if [[ "$?" == "0" ]]; then
     echo "Successfully extracted the snapshot tarball"
   else
-    echo "Tarball extraction failed. Skipping snapshot application..."
+    echo "Error: Tarball extraction failed. Skipping snapshot application..."
     exit 11
   fi
 else
@@ -139,6 +139,6 @@ rm -rf $SNAPSHOT_DIR
 if [[ "$SNAPSHOT_IMPORT_EXIT_CODE" == "0" ]]; then
   echo "Snapshot successfully imported"
 else
-  echo "Snapshot import failed. Skipping snapshot application..."
+  echo "Error: Snapshot import failed. Skipping snapshot application..."
   exit 12
 fi
