@@ -8,7 +8,7 @@ set -u
 # Translate APPLY_SNAPSHOT to uppercase; default to FALSE
 readonly APPLY_SNAPSHOT=$(echo "${APPLY_SNAPSHOT:-false}" | tr "[:lower:]" "[:upper:]")
 
-if [[ "$APPLY_SNAPSHOT" == "FALSE" ]]; then
+if [[ "$APPLY_SNAPSHOT" != "TRUE" ]]; then
   echo "Automatic snapshot application disabled; to enable, set 'APPLY_SNAPSHOT=true' and restart"
   exit 0
 fi
