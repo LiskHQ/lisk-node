@@ -46,6 +46,7 @@ COPY --from=op /app/op-node/bin/op-node ./
 COPY --from=reth /app/target/$PROFILE/op-reth ./
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./reth/reth-entrypoint ./execution-entrypoint
+COPY ./reth/download-apply-snapshot.sh .
 COPY op-node-entrypoint .
 COPY sepolia ./sepolia
 COPY mainnet ./mainnet

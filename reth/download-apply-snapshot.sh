@@ -13,13 +13,13 @@ if [[ "$APPLY_SNAPSHOT" == "FALSE" ]]; then
   exit 0
 fi
 
-if [[ "${GETH_DATA_DIR-x}" == x ]]; then
-  echo "GETH_DATA_DIR is undefined"
+if [[ "${RETH_DATA_DIR-x}" == x ]]; then
+  echo "RETH_DATA_DIR is undefined"
   exit 1
 fi
 
-if [[ "${CLIENT}" != "geth" ]]; then
-  echo "Error: this script is only for op-geth"
+if [[ "${CLIENT}" != "reth" ]]; then
+  echo "Error: this script is only for reth"
   exit 14
 fi
 
@@ -32,20 +32,7 @@ SNAPSHOT_URL="$SNAPSHOT_URL"
 if [[ "${SNAPSHOT_URL-x}" == x || -z $SNAPSHOT_URL ]];
 then
   readonly SNAPSHOT_URL_BASE="$SNAPSHOT_BASE_URL_DEFAULT/$SNAPSHOT_NETWORK"
-  
-  # Try client specific snapshot first, fallback to generic one
-  client_specific_code=$(curl -s -o /dev/null -w "%{http_code}" "$SNAPSHOT_URL_BASE/latest-${CLIENT}-${SNAPSHOT_TYPE}")
-  if [[ "$client_specific_code" == "200" ]]; then
-    readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location "$SNAPSHOT_URL_BASE/latest-${CLIENT}-${SNAPSHOT_TYPE}")
-  else
-    readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location "$SNAPSHOT_URL_BASE/latest-${SNAPSHOT_TYPE}")
-  fi
-  
-  if [[ -z "$LATEST_SNAPSHOT_NAME" ]]; then
-    echo "Failed to fetch snapshot name from both latest-${CLIENT}-${SNAPSHOT_TYPE} and latest-${SNAPSHOT_TYPE}"
-    exit 3
-  fi
-  
+  readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location $SNAPSHOT_URL_BASE/latest-${CLIENT}-${SNAPSHOT_TYPE})
   SNAPSHOT_URL="$SNAPSHOT_URL_BASE/$LATEST_SNAPSHOT_NAME"
   echo "SNAPSHOT_URL not specified; automatically resolved to $SNAPSHOT_URL"
 fi
@@ -70,6 +57,12 @@ readonly SNAPSHOT_REMOTE_FILENAME=$(basename ${SNAPSHOT_URL})
 readonly SNAPSHOT_SHA256_URL="${SNAPSHOT_URL}.SHA256"
 readonly SNAPSHOT_SHA256_FILENAME="${SNAPSHOT_REMOTE_FILENAME}.SHA256"
 readonly SNAPSHOT_DOWNLOAD_MAX_TRIES=3
+
+# Verify that the snapshot is a datadir snapshot
+if [[ $SNAPSHOT_REMOTE_FILENAME != *datadir*.tar.gz ]]; then
+  echo "Error: Reth only supports datadir snapshots. The provided snapshot appears to be an export snapshot."
+  exit 13
+fi
 
 # Clear any existing snapshots
 rm -rf $SNAPSHOT_DIR
@@ -106,31 +99,10 @@ download_and_verify(){
 }
 for i in $(seq 1 $SNAPSHOT_DOWNLOAD_MAX_TRIES); do download_and_verify && returncode=0 && break || returncode=$? && sleep 10; done; (exit $returncode)
 
-# Extract if the downloaded snapshot file is a tarball
-if [[ $SNAPSHOT_REMOTE_FILENAME == *.tar.gz && $SNAPSHOT_REMOTE_FILENAME != *datadir* ]]; then
-  readonly SNAPSHOT_FILENAME=$(tar -tf ${SNAPSHOT_DIR}/${SNAPSHOT_REMOTE_FILENAME})
-
-  echo -e "\nExtracting the snapshot tarball to '${SNAPSHOT_DIR}/${SNAPSHOT_FILENAME}'"
-  tar --directory $SNAPSHOT_DIR -xf $SNAPSHOT_DIR/$SNAPSHOT_REMOTE_FILENAME
-  if [[ "$?" == "0" ]]; then
-    echo "Successfully extracted the snapshot tarball"
-  else
-    echo "Tarball extraction failed. Skipping snapshot application..."
-    exit 11
-  fi
-else
-  readonly SNAPSHOT_FILENAME=${SNAPSHOT_REMOTE_FILENAME}
-fi
-
-# Import snapshot
+# Extract the datadir snapshot
 echoBanner "Importing snapshot..."
-if [[ $SNAPSHOT_FILENAME == *datadir*.tar.gz ]]; then
-  echo "Extracting ${CLIENT} data directory snapshot to ${GETH_DATA_DIR}..."
-  tar --directory $GETH_DATA_DIR -xf $SNAPSHOT_DIR/$SNAPSHOT_FILENAME
-else
-  echo "Importing geth export snapshot to ${GETH_DATA_DIR}..."
-  ./geth import --syncmode "${OP_GETH_SYNCMODE:-full}" --datadir=$GETH_DATA_DIR $SNAPSHOT_DIR/$SNAPSHOT_FILENAME
-fi
+echo "Extracting reth data directory snapshot to ${RETH_DATA_DIR}..."
+tar --directory $RETH_DATA_DIR -xf $SNAPSHOT_DIR/$SNAPSHOT_REMOTE_FILENAME
 readonly SNAPSHOT_IMPORT_EXIT_CODE=$?
 
 echo -e "\nRemoving the temporary snapshot download directory: '${SNAPSHOT_DIR}'"

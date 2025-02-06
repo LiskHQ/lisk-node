@@ -217,20 +217,31 @@ Refer to the `op-node` configuration [documentation](https://docs.optimism.io/bu
 ## Snapshots
 
 > **Note**:
-> - Snapshots are only available for the `op-geth` client and are from an archival node. They are of two types:
->   - `export`: small download size, slow to restore from, data is verified during restore
+> - Snapshots are available for both `op-geth` and `op-reth` clients:
+>   - op-geth supports both export and datadir snapshots
+>   - op-reth only supports datadir snapshots
+> - All snapshots are from archival nodes
+> - Snapshot types:
+>   - `export`: small download size, slow to restore from, data is verified during restore (op-geth only)
 >   - `datadir`: large download size, fast to restore from, no data verification during restore
 
 ### Docker
 
-To enable auto-snapshot download and application, please set the `APPLY_SNAPSHOT` environment variable to `true`, when starting the node.
+To enable auto-snapshot download and application, set the `APPLY_SNAPSHOT` environment variable to `true` when starting the node:
 ```sh
 APPLY_SNAPSHOT=true docker compose up --build --detach
 ```
 
-To choose the snapshot type, please set the `SNAPSHOT_TYPE` flag to either `export` (default) or `datadir`, when starting the node.
+To specify the client and snapshot type, use the `CLIENT` and `SNAPSHOT_TYPE` variables:
 ```sh
-APPLY_SNAPSHOT=true SNAPSHOT_TYPE=export docker compose up --build --detach
+# For op-geth with export snapshot (default)
+APPLY_SNAPSHOT=true CLIENT=geth SNAPSHOT_TYPE=export docker compose up --build --detach
+
+# For op-geth with datadir snapshot
+APPLY_SNAPSHOT=true CLIENT=geth SNAPSHOT_TYPE=datadir docker compose up --build --detach
+
+# For op-reth (only supports datadir)
+APPLY_SNAPSHOT=true CLIENT=reth SNAPSHOT_TYPE=datadir docker compose up --build --detach
 ```
 
 You can also download and apply a snapshot from a custom URL by setting the `SNAPSHOT_URL` environment variable.
@@ -243,7 +254,14 @@ APPLY_SNAPSHOT=true SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build
 
 Please follow the steps below:
 
-- Download the snapshot and the corresponding checksum from. The latest snapshot name is always listed in the `latest-<export|datadir>` file:
+- Download the snapshot and the corresponding checksum. The latest snapshot names are listed in:
+  - For op-geth:
+    - `latest-geth-export` (smaller download, slower restore with verification)
+    - `latest-geth-datadir` (larger download, faster restore without verification)
+  - For op-reth:
+    - `latest-reth-datadir` (datadir snapshot only)
+  
+  Available at:
   - Sepolia: https://snapshots.lisk.com/sepolia
   - Mainnet: https://snapshots.lisk.com/mainnet
 
