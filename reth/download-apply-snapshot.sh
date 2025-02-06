@@ -13,13 +13,18 @@ if [[ "$APPLY_SNAPSHOT" != "TRUE" ]]; then
   exit 0
 fi
 
-if [[ "${CLIENT}" != "geth" ]]; then
-  echo "Error: This script is only for op-geth"
+if [[ "${CLIENT}" != "reth" ]]; then
+  echo "Error: This script is only for op-reth"
   exit 14
 fi
 
-if [[ "${GETH_DATA_DIR-x}" == x ]]; then
-  echo "Error: GETH_DATA_DIR is undefined"
+if [[ "${SNAPSHOT_TYPE}" != "datadir" ]]; then
+  echo "Error: Only datadir snapshots are supported on op-reth; to proceed, additionally set 'SNAPSHOT_TYPE=datadir' and restart"
+  exit 15
+fi
+
+if [[ "${RETH_DATA_DIR-x}" == x ]]; then
+  echo "Error: RETH_DATA_DIR is undefined"
   exit 1
 fi
 
@@ -32,20 +37,7 @@ SNAPSHOT_URL="$SNAPSHOT_URL"
 if [[ "${SNAPSHOT_URL-x}" == x || -z $SNAPSHOT_URL ]];
 then
   readonly SNAPSHOT_URL_BASE="$SNAPSHOT_BASE_URL_DEFAULT/$SNAPSHOT_NETWORK"
-  
-  # Try client specific snapshot first, fallback to generic one
-  client_specific_code=$(curl -s -o /dev/null -w "%{http_code}" "$SNAPSHOT_URL_BASE/latest-${CLIENT}-${SNAPSHOT_TYPE}")
-  if [[ "$client_specific_code" == "200" ]]; then
-    readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location "$SNAPSHOT_URL_BASE/latest-${CLIENT}-${SNAPSHOT_TYPE}")
-  else
-    readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location "$SNAPSHOT_URL_BASE/latest-${SNAPSHOT_TYPE}")
-  fi
-  
-  if [[ -z "$LATEST_SNAPSHOT_NAME" ]]; then
-    echo "Error: Failed to fetch the latest snapshot name"
-    exit 3
-  fi
-  
+  readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location $SNAPSHOT_URL_BASE/latest-${CLIENT}-${SNAPSHOT_TYPE})
   SNAPSHOT_URL="$SNAPSHOT_URL_BASE/$LATEST_SNAPSHOT_NAME"
   echo "SNAPSHOT_URL not specified; automatically resolved to $SNAPSHOT_URL"
 fi
@@ -93,12 +85,12 @@ download_and_verify(){
   elif command -v shasum &>/dev/null; then
     (cd $SNAPSHOT_DIR && shasum --algorithm 256 --check $SNAPSHOT_SHA256_FILENAME &>/dev/null)
   else
-    echo "Neither sha256sum nor shasum available. Skipping..."
+    echo "Error: Neither sha256sum nor shasum available. Skipping..."
     return 9
   fi
 
   if [[ "$?" != "0" ]]; then
-    echo "Snapshot is corrupted. Skipping snapshot application..."
+    echo "Error: Snapshot is corrupted. Skipping snapshot application..."
     return 10
   fi
 
@@ -106,31 +98,10 @@ download_and_verify(){
 }
 for i in $(seq 1 $SNAPSHOT_DOWNLOAD_MAX_TRIES); do download_and_verify && returncode=0 && break || returncode=$? && sleep 10; done; (exit $returncode)
 
-# Extract if the downloaded snapshot file is a tarball
-if [[ $SNAPSHOT_REMOTE_FILENAME == *.tar.gz && $SNAPSHOT_REMOTE_FILENAME != *datadir* ]]; then
-  readonly SNAPSHOT_FILENAME=$(tar -tf ${SNAPSHOT_DIR}/${SNAPSHOT_REMOTE_FILENAME})
-
-  echo -e "\nExtracting the snapshot tarball to '${SNAPSHOT_DIR}/${SNAPSHOT_FILENAME}'"
-  tar --directory $SNAPSHOT_DIR -xf $SNAPSHOT_DIR/$SNAPSHOT_REMOTE_FILENAME
-  if [[ "$?" == "0" ]]; then
-    echo "Successfully extracted the snapshot tarball"
-  else
-    echo "Error: Tarball extraction failed. Skipping snapshot application..."
-    exit 11
-  fi
-else
-  readonly SNAPSHOT_FILENAME=${SNAPSHOT_REMOTE_FILENAME}
-fi
-
-# Import snapshot
+# Extract the datadir snapshot
 echoBanner "Importing snapshot..."
-if [[ $SNAPSHOT_FILENAME == *datadir*.tar.gz ]]; then
-  echo "Extracting ${CLIENT} data directory snapshot to ${GETH_DATA_DIR}..."
-  tar --directory $GETH_DATA_DIR -xf $SNAPSHOT_DIR/$SNAPSHOT_FILENAME
-else
-  echo "Importing geth export snapshot to ${GETH_DATA_DIR}..."
-  ./geth import --syncmode "${OP_GETH_SYNCMODE:-full}" --datadir=$GETH_DATA_DIR $SNAPSHOT_DIR/$SNAPSHOT_FILENAME
-fi
+echo "Extracting reth data directory snapshot to ${RETH_DATA_DIR}..."
+tar --directory $RETH_DATA_DIR -xf $SNAPSHOT_DIR/$SNAPSHOT_REMOTE_FILENAME
 readonly SNAPSHOT_IMPORT_EXIT_CODE=$?
 
 echo -e "\nRemoving the temporary snapshot download directory: '${SNAPSHOT_DIR}'"

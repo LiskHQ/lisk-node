@@ -23,10 +23,10 @@ We recommend you the following hardware configuration to run a Lisk L2 node:
 
 ## Supported networks
 
-| Network      | Status |
-| ------------ | ------ |
-| Lisk Sepolia | ✅     |
-| Lisk Mainnet | ✅     |
+| Lisk Network      | Status |
+| ----------------- | ------ |
+| Sepolia (Testnet) | ✅     |
+| Mainnet           | ✅     |
 
 ## Usage
 
@@ -94,7 +94,7 @@ cd lisk-node
 Set the following environment variable:
 
 ```
-export DATADIR_PATH=... # Path to the folder where geth data will be stored
+export DATADIR_PATH=... # Path to the folder where the execution node (op-geth or op-reth) data will be stored
 ```
 
 #### Create a JWT Secret
@@ -151,7 +151,7 @@ Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/bu
 Navigate to your `reth` directory and start service by running the command:
 
 ```sh
-./target/release/op-reth node \
+./target/maxperf/op-reth node \
   -vvv \
   --chain=PATH_TO_NETWORK_GENESIS_FILE \
   --datadir="$DATADIR_PATH" \
@@ -179,7 +179,7 @@ Navigate to your `reth` directory and start service by running the command:
 Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node.html#reth-node) for detailed information about available options.
 
 > **Note**:
-> <br>Official Lisk Sequencer HTTP RPC:
+> <br>Official Lisk Sequencer HTTP RPC endpoints:
 > - **Lisk Sepolia**: https://rpc.sepolia-api.lisk.com
 > - **Lisk Mainnet**: https://rpc.api.lisk.com
 
@@ -217,20 +217,31 @@ Refer to the `op-node` configuration [documentation](https://docs.optimism.io/bu
 ## Snapshots
 
 > **Note**:
-> - Snapshots are only available for the `op-geth` client and are from an archival node. They are of two types:
->   - `export`: small download size, slow to restore from, data is verified during restore
+> - Snapshots are available for both `op-geth` and `op-reth` clients:
+>   - op-geth supports both export and datadir snapshots
+>   - op-reth only supports datadir snapshots
+> - All snapshots are from archival nodes
+> - Snapshot types:
+>   - `export`: small download size, slow to restore from, data is verified during restore (op-geth only)
 >   - `datadir`: large download size, fast to restore from, no data verification during restore
 
 ### Docker
 
-To enable auto-snapshot download and application, please set the `APPLY_SNAPSHOT` environment variable to `true`, when starting the node.
+To enable auto-snapshot download and application, set the `APPLY_SNAPSHOT` environment variable to `true` when starting the node:
 ```sh
 APPLY_SNAPSHOT=true docker compose up --build --detach
 ```
 
-To choose the snapshot type, please set the `SNAPSHOT_TYPE` flag to either `export` (default) or `datadir`, when starting the node.
+To specify the client and snapshot type, set both the `CLIENT` and `SNAPSHOT_TYPE` environment variables:
 ```sh
-APPLY_SNAPSHOT=true SNAPSHOT_TYPE=export docker compose up --build --detach
+# For op-geth with export snapshot (default)
+APPLY_SNAPSHOT=true CLIENT=geth SNAPSHOT_TYPE=export docker compose up --build --detach
+
+# For op-geth with datadir snapshot
+APPLY_SNAPSHOT=true CLIENT=geth SNAPSHOT_TYPE=datadir docker compose up --build --detach
+
+# For op-reth (only supports datadir)
+APPLY_SNAPSHOT=true CLIENT=reth SNAPSHOT_TYPE=datadir docker compose up --build --detach
 ```
 
 You can also download and apply a snapshot from a custom URL by setting the `SNAPSHOT_URL` environment variable.
@@ -243,7 +254,14 @@ APPLY_SNAPSHOT=true SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build
 
 Please follow the steps below:
 
-- Download the snapshot and the corresponding checksum from. The latest snapshot name is always listed in the `latest-<export|datadir>` file:
+- Download the snapshot and the corresponding checksum. The latest snapshot names are listed in:
+  - For op-geth:
+    - `latest-geth-export` (smaller download, slower restore with verification)
+    - `latest-geth-datadir` (larger download, faster restore without verification)
+  - For op-reth:
+    - `latest-reth-datadir` (datadir snapshot only)
+
+  Available at:
   - Sepolia: https://snapshots.lisk.com/sepolia
   - Mainnet: https://snapshots.lisk.com/mainnet
 
@@ -274,3 +292,16 @@ $((($( date +%s )-\
 $( curl -s -d '{"id":0,"jsonrpc":"2.0","method":"optimism_syncStatus"}' -H "Content-Type: application/json" http://localhost:9545 |
    jq -r .result.unsafe_l2.timestamp))/60)) minutes
 ```
+
+## API Documentation
+
+For developers and node operators who need to interact with the node programmatically, here are the relevant API documentation links:
+
+- `op-node`: Comprehensive JSON-RPC API documentation for the Optimism node
+  - [Official Documentation](https://docs.optimism.io/builders/node-operators/json-rpc)
+
+- `op-geth`: API documentation for the Optimism-modified Geth client
+  - [Programmatic Interface Guide](https://github.com/ethereum-optimism/op-geth?tab=readme-ov-file#programmatically-interfacing-geth-nodes)
+
+- `op-reth`: Detailed JSON-RPC documentation for the Reth client
+  - [JSON-RPC Documentation](https://reth.rs/jsonrpc/intro.html)
