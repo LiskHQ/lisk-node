@@ -292,3 +292,16 @@ $((($( date +%s )-\
 $( curl -s -d '{"id":0,"jsonrpc":"2.0","method":"optimism_syncStatus"}' -H "Content-Type: application/json" http://localhost:9545 |
    jq -r .result.unsafe_l2.timestamp))/60)) minutes
 ```
+
+## API Documentation
+
+For developers and node operators who need to interact with the node programmatically, here are the relevant API documentation links:
+
+- `op-node`: Comprehensive JSON-RPC API documentation for the Optimism node
+  - [Official Documentation](https://docs.optimism.io/builders/node-operators/json-rpc)
+
+- `op-geth`: API documentation for the Optimism-modified Geth client
+  - [Programmatic Interface Guide](https://github.com/ethereum-optimism/op-geth?tab=readme-ov-file#programmatically-interfacing-geth-nodes)
+
+- `op-reth`: Detailed JSON-RPC documentation for the Reth client
+  - [JSON-RPC Documentation](https://reth.rs/jsonrpc/intro.html)
