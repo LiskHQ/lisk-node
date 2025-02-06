@@ -9,17 +9,17 @@ set -u
 readonly APPLY_SNAPSHOT=$(echo "${APPLY_SNAPSHOT:-false}" | tr "[:lower:]" "[:upper:]")
 
 if [[ "$APPLY_SNAPSHOT" == "FALSE" ]]; then
-  echo "Error: Automatic snapshot application disabled; to enable, set 'APPLY_SNAPSHOT=true' and restart"
+  echo "Automatic snapshot application disabled; to enable, set 'APPLY_SNAPSHOT=true' and restart"
   exit 0
 fi
 
 if [[ "${CLIENT}" != "reth" ]]; then
-  echo "Error: this script is only for reth"
+  echo "Error: This script is only for op-reth"
   exit 14
 fi
 
 if [[ "${SNAPSHOT_TYPE}" != "datadir" ]]; then
-  echo "Error: this script is only for datadir snapshots"
+  echo "Error: Only datadir snapshots are supported on op-reth; to proceed, additionally set 'SNAPSHOT_TYPE=datadir' and restart"
   exit 15
 fi
 

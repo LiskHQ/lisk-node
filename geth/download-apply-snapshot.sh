@@ -9,12 +9,12 @@ set -u
 readonly APPLY_SNAPSHOT=$(echo "${APPLY_SNAPSHOT:-false}" | tr "[:lower:]" "[:upper:]")
 
 if [[ "$APPLY_SNAPSHOT" == "FALSE" ]]; then
-  echo "Error: Automatic snapshot application disabled; to enable, set 'APPLY_SNAPSHOT=true' and restart"
+  echo "Automatic snapshot application disabled; to enable, set 'APPLY_SNAPSHOT=true' and restart"
   exit 0
 fi
 
 if [[ "${CLIENT}" != "geth" ]]; then
-  echo "Error: this script is only for op-geth"
+  echo "Error: This script is only for op-geth"
   exit 14
 fi
 
@@ -42,7 +42,7 @@ then
   fi
   
   if [[ -z "$LATEST_SNAPSHOT_NAME" ]]; then
-    echo "Error: Failed to fetch snapshot name from both latest-${CLIENT}-${SNAPSHOT_TYPE} and latest-${SNAPSHOT_TYPE}"
+    echo "Error: Failed to fetch the latest snapshot name"
     exit 3
   fi
   
