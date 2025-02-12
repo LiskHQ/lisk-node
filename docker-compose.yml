@@ -18,6 +18,12 @@ services:
       # select your network here:
       # - .env.sepolia
       - .env.mainnet
+    healthcheck:
+      test: ["CMD", "curl", "-sd", "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"eth_chainId\",\"params\":[]}", "-H", "Content-Type: application/json", "http://execution:8545"]
+      start_period: 5s
+      interval: 1m
+      timeout: 5s
+      retries: 3
   node:
     platform: linux/amd64
     build:
@@ -26,7 +32,8 @@ services:
       args:
         PROFILE: ${RETH_BUILD_PROFILE:-maxperf}
     depends_on:
-      - execution
+      execution:
+        condition: service_healthy
     ports:
       - "9545:9545"     # RPC
       - "9222:9222"     # P2P TCP
@@ -39,3 +46,9 @@ services:
       # select your network here:
       # - .env.sepolia
       - .env.mainnet
+    healthcheck:
+      test: ["CMD", "curl", "-sd", "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"optimism_version\",\"params\":[]}", "-H", "Content-Type: application/json", "http://node:9545"]
+      start_period: 5s
+      interval: 1m
+      timeout: 5s
+      retries: 3
