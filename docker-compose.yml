@@ -24,6 +24,7 @@ services:
       # select your network here:
       # - .env.sepolia
       - .env.mainnet
+
   node:
     platform: linux/amd64
     build:
@@ -47,7 +48,7 @@ services:
       interval: 1m
       timeout: 5s
       retries: 3
-     env_file:
+    env_file:
       - .env
       # select your network here:
       # - .env.sepolia
