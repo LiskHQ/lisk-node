@@ -124,7 +124,7 @@ Navigate to your `op-geth` directory and start service by running the command:
     --ws.addr=0.0.0.0 \
     --ws.port=8546 \
     --ws.origins="*" \
-    --ws.api=debug,eth,net,engine \
+    --ws.api=web3,debug,eth,net,engine \
     --http \
     --http.corsdomain="*" \
     --http.vhosts="*" \
@@ -163,7 +163,7 @@ Navigate to your `reth` directory and start service by running the command:
   --ws.origins="*" \
   --ws.addr=0.0.0.0 \
   --ws.port=8546 \
-  --ws.api=debug,eth,net,txpool \
+  --ws.api=web3,debug,eth,net,txpool \
   --http \
   --http.corsdomain="*" \
   --http.addr=0.0.0.0 \
