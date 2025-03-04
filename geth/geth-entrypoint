@@ -67,7 +67,7 @@ exec ./geth \
     --ws.addr=0.0.0.0 \
     --ws.port="$WS_PORT" \
     --ws.origins="*" \
-    --ws.api=debug,eth,net,engine \
+    --ws.api=web3,debug,eth,net,engine \
     --http \
     --http.corsdomain="*" \
     --http.vhosts="*" \
