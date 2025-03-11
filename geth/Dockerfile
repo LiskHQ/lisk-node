@@ -4,8 +4,8 @@ WORKDIR /app
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.11.1
-ENV COMMIT=443e931f242e1595896d6598b02068dc822e1232
+ENV VERSION=v1.12.0
+ENV COMMIT=ab06b2e81b4525f6f1e45e928989b21ab904e26f
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
