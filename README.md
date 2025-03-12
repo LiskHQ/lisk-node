@@ -182,6 +182,9 @@ Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node.
 > <br>Official Lisk Sequencer HTTP RPC endpoints:
 > - **Lisk Sepolia**: https://rpc.sepolia-api.lisk.com
 > - **Lisk Mainnet**: https://rpc.api.lisk.com
+>
+> ⚠️ Please consider using a private endpoint to connect to the sequencer when running your own node if you encounter rate limit issues. More information is available here: [Using RPC Nodes](https://docs.gelato.network/developer-services/rpc-nodes/using-rpc-nodes)
+> 
 
 #### Run op-node
 
