@@ -13,9 +13,9 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
 RUN cd op-node && \
     make VERSION=$VERSION op-node
 
-FROM rust:1.82 AS reth
+FROM rust:1.85 AS reth
 
-ARG FEATURES=jemalloc,asm-keccak,optimism
+ARG FEATURES=jemalloc,asm-keccak
 ARG PROFILE=maxperf
 
 WORKDIR /app
@@ -23,8 +23,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/paradigmxyz/reth.git
-ENV VERSION=v1.2.2
-ENV COMMIT=2f4c509b3d01960f96abf2f9314b7d63db36977b
+ENV VERSION=v1.3.0
+ENV COMMIT=a38c991c363d241894867a89324b8670be2f6a44
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'

@@ -31,4 +31,4 @@ index 0144140..bbb833f 100644
 +    cd op-node && \
      make VERSION=$VERSION op-node
  
- FROM rust:1.82 AS reth
+ FROM rust:1.85 AS reth
