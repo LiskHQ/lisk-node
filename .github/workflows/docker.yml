@@ -7,7 +7,7 @@ on:
 
 env:
   DOCKER_BUILD_PLATFORMS: linux/amd64
-  RETH_FEATURES: jemalloc,asm-keccak,optimism
+  RETH_FEATURES: jemalloc,asm-keccak
   RETH_BUILD_PROFILE: maxperf
 
 jobs:
