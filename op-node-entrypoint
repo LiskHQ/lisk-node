@@ -7,11 +7,7 @@ echoBanner() {
 	echo -e "------------------------------------------------------------------------------------------------------------\n"
 }
 
-if [ "$OP_NODE_NETWORK" = lisk-sepolia ]; then
-    ADDITIONAL_ARGS="--override.holocene=1732633200 --override.pectrablobschedule=1742486400"
-else
-    ADDITIONAL_ARGS=""
-fi
+ADDITIONAL_ARGS=""
 
 get_public_ip() {
   # Define a list of HTTP-based providers
