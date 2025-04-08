@@ -208,10 +208,6 @@ INFO [06-26|13:31:20.389] Advancing bq origin                      origin=17171d
 
 For more information refer to the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/mainnet#full-sync).
 
-> **Note**:
-> - In case you had skipped the `op-geth` [initialization step](#initialize-op-geth) above, you can start the node with the `--network=OP_NODE_NETWORK` flag.
-> - When specifying the `--network` flag, kindly make sure to remove the `--rollup.config` flag.
-
 Refer to the `op-node` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-node) for detailed information about available options.
 
 > **Note**:

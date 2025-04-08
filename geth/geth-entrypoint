@@ -15,9 +15,9 @@ AUTHRPC_PORT="${AUTHRPC_PORT:-8551}"
 METRICS_PORT="${METRICS_PORT:-6060}"
 HOST_IP="" # put your external IP address here and open port 30303 to improve peer connectivity
 P2P_PORT="${P2P_PORT:-30303}"
+ADDITIONAL_ARGS=""
 OP_GETH_GCMODE="${OP_GETH_GCMODE:-full}"
 OP_GETH_SYNCMODE="${OP_GETH_SYNCMODE:-full}"
-[ "$OP_NODE_NETWORK" = lisk-sepolia ] && ADDITIONAL_ARGS="--override.holocene=1732633200" || ADDITIONAL_ARGS=""
 
 if [[ -z "$OP_NODE_NETWORK" ]]; then
     echo "expected OP_NODE_NETWORK to be set" 1>&2
