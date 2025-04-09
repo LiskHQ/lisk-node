@@ -23,8 +23,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/paradigmxyz/reth.git
-ENV VERSION=v1.3.7
-ENV COMMIT=ed7da87da4de340a437bf46f39a7e1397ac82065
+ENV VERSION=v1.3.8
+ENV COMMIT=44ab192899a898e2499ef20870629bb7a765f2a2
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
