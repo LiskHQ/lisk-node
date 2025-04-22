@@ -1,11 +1,14 @@
-FROM golang:1.22 AS op
+ARG GOLANG_VERSION=1.24
+ARG UBUNTU_VERSION=25.04
+
+FROM golang:$GOLANG_VERSION AS op
 
 WORKDIR /app
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.13.0
-ENV COMMIT=5f003211aed7469eed7df666291a62c025d1c46c
+ENV VERSION=v1.13.2
+ENV COMMIT=c8b9f62736a7dad7e569719a84c406605f4472e6
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
@@ -13,20 +16,20 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
 RUN cd op-node && \
     make VERSION=$VERSION op-node
 
-FROM golang:1.22 AS geth
+FROM golang:$GOLANG_VERSION AS geth
 
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/op-geth.git
-ENV VERSION=v1.101503.2 
-ENV COMMIT=37be9e05e9d6843619c9bbaabc96abc0ce653f55
+ENV VERSION=v1.101503.4
+ENV COMMIT=2b9abb39077cb88f6e8a513f09a5ea2c2569dfed
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
 RUN go run build/ci.go install -static ./cmd/geth
 
-FROM ubuntu:22.04
+FROM ubuntu:$UBUNTU_VERSION
 
 RUN apt-get update && \
     apt-get install -y jq curl supervisor && \
