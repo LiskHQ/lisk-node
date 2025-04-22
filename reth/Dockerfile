@@ -1,4 +1,8 @@
-FROM golang:1.22 AS op
+ARG GOLANG_VERSION=1.24
+ARG RUST_VERSION=1.86
+ARG UBUNTU_VERSION=25.04
+
+FROM golang:$GOLANG_VERSION AS op
 
 WORKDIR /app
 
@@ -13,7 +17,7 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
 RUN cd op-node && \
     make VERSION=$VERSION op-node
 
-FROM rust:1.85 AS reth
+FROM rust:$RUST_VERSION AS reth
 
 ARG FEATURES=jemalloc,asm-keccak
 ARG PROFILE=maxperf
@@ -31,7 +35,7 @@ RUN git clone $REPO --branch $VERSION --single-branch . && \
 
 RUN RUSTFLAGS="-C target-cpu=native" cargo build --bin op-reth --locked --features $FEATURES --profile $PROFILE --manifest-path crates/optimism/bin/Cargo.toml
 
-FROM ubuntu:22.04
+FROM ubuntu:$UBUNTU_VERSION
 
 ARG PROFILE=maxperf
 

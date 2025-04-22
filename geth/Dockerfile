@@ -1,4 +1,7 @@
-FROM golang:1.22 AS op
+ARG GOLANG_VERSION=1.24
+ARG UBUNTU_VERSION=25.04
+
+FROM golang:$GOLANG_VERSION AS op
 
 WORKDIR /app
 
@@ -13,12 +16,12 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
 RUN cd op-node && \
     make VERSION=$VERSION op-node
 
-FROM golang:1.22 AS geth
+FROM golang:$GOLANG_VERSION AS geth
 
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/op-geth.git
-ENV VERSION=v1.101503.4 
+ENV VERSION=v1.101503.4
 ENV COMMIT=2b9abb39077cb88f6e8a513f09a5ea2c2569dfed
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
@@ -26,7 +29,7 @@ RUN git clone $REPO --branch $VERSION --single-branch . && \
 
 RUN go run build/ci.go install -static ./cmd/geth
 
-FROM ubuntu:22.04
+FROM ubuntu:$UBUNTU_VERSION
 
 RUN apt-get update && \
     apt-get install -y jq curl supervisor && \
