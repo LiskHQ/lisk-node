@@ -1,8 +1,8 @@
 diff --git a/geth/Dockerfile b/geth/Dockerfile
-index 7316271..86e9a33 100644
+index 0bc9509..8a71f8e 100644
 --- a/geth/Dockerfile
 +++ b/geth/Dockerfile
-@@ -9,7 +9,11 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
+@@ -13,7 +13,11 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
      git switch -c branch-$VERSION && \
      bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
  
@@ -14,12 +14,12 @@ index 7316271..86e9a33 100644
 +    cd op-node && \
      make VERSION=$VERSION op-node
  
- FROM golang:1.22 AS geth
+ FROM golang:$GOLANG_VERSION AS geth
 diff --git a/reth/Dockerfile b/reth/Dockerfile
-index 0144140..bbb833f 100644
+index 12f758f..7422365 100644
 --- a/reth/Dockerfile
 +++ b/reth/Dockerfile
-@@ -9,7 +9,11 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
+@@ -14,7 +14,11 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
      git switch -c branch-$VERSION && \
      bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
  
@@ -31,4 +31,4 @@ index 0144140..bbb833f 100644
 +    cd op-node && \
      make VERSION=$VERSION op-node
  
- FROM rust:1.85 AS reth
+ FROM rust:$RUST_VERSION AS reth
