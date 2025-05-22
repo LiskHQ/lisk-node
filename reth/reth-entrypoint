@@ -27,7 +27,7 @@ echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
 echoBanner "Starting op-reth execution node under '${RETH_DATA_DIR}'..."
 exec ./op-reth node \
     -vvv \
-    --chain="$GENESIS_FILE_PATH" \
+    --chain="$RETH_CHAIN" \
     --datadir="$RETH_DATA_DIR" \
     --log.stdout.format log-fmt \
     --authrpc.addr=0.0.0.0 \
