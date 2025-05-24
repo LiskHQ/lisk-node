@@ -31,8 +31,7 @@ We recommend you the following hardware configuration to run a Lisk L2 node:
 ## Usage
 
 > **Note**:
-> - It is now possible to run the Lisk nodes with the `--op-network` flag on the op-geth execution client.
-> - It is still not possible to run the Lisk nodes with the `--chain` flag on the op-reth execution client.
+> - It is now possible to run the Lisk nodes with the `--op-network` flag on the op-geth execution client and the `--chain` flag on the op-reth execution client.
 
 ### Clone the Repository
 
