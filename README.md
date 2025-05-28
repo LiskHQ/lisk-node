@@ -32,6 +32,7 @@ We recommend you the following hardware configuration to run a Lisk L2 node:
 
 > **Note**:
 > - It is now possible to run the Lisk nodes with the `--op-network` flag on the op-geth execution client and the `--chain` flag on the op-reth execution client.
+> - Starting with Lisk Node [v0.3.0](https://github.com/LiskHQ/lisk-node/releases/tag/v0.3.0), we urge all users running op-reth client to update their `--chain` flag to specify the network name instead of the genesis block filepath. We've removed the genesis block and will not be maintaining it in the repository going forward.
 
 ### Clone the Repository
 
@@ -86,7 +87,7 @@ cd lisk-node
     git apply <path-to-op-node-lisk-sepolia.patch>
     ```
 
-- To build `op-reth` from source, follow the reth official [documentation](https://reth.rs/run/optimism.html#installing-op-reth).
+- To build `op-reth` from source, follow the official reth [documentation](https://reth.rs/run/optimism.html#installing-op-reth).
 
 #### Set environment variables
 
@@ -108,12 +109,13 @@ For more information refer to the OP [documentation](https://docs.optimism.io/bu
 
 #### Run op-geth
 
-Navigate to your `op-geth` directory and start service by running the command:
+- Set `OP_NODE_NETWORK` to `lisk-mainnet` to run the node against Lisk Mainnet or `lisk-sepolia` to run it against Lisk Sepolia.
+- Navigate to your `op-geth` directory and start service by running the command:
 
 ```sh
 ./build/bin/geth \
     --op-network=$OP_NODE_NETWORK \
-    --datadir=$DATADIR_PATH \
+    --datadir="$DATADIR_PATH" \
     --verbosity=3 \
     --authrpc.addr=0.0.0.0 \
     --authrpc.port=8551 \
@@ -147,7 +149,8 @@ Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/bu
 
 #### Run op-reth
 
-Navigate to your `reth` directory and start service by running the command:
+- Set `RETH_CHAIN` to `lisk` to run the node against Lisk Mainnet or `lisk-sepolia` to run it against Lisk Sepolia.
+- Navigate to your `reth` directory and start service by running the command:
 
 ```sh
 ./target/maxperf/op-reth node \
@@ -182,8 +185,7 @@ Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node.
 > - **Lisk Sepolia**: https://rpc.sepolia-api.lisk.com
 > - **Lisk Mainnet**: https://rpc.api.lisk.com
 >
-> ⚠️ Please consider using a private endpoint to connect to the sequencer when running your own node if you encounter rate limit issues. More information is available here: [Using RPC Nodes](https://docs.gelato.network/developer-services/rpc-nodes/using-rpc-nodes)
-> 
+> ⚠️ Please consider using a private endpoint to connect to the sequencer when running your own node if you encounter rate limit issues. More information is available here: [Using RPC Nodes](https://docs.gelato.network/developer-services/rpc-nodes/using-rpc-nodes).
 
 #### Run op-node
 
@@ -191,7 +193,7 @@ Navigate to your `op-node` directory and start service by running the command:
 
 ```sh
 ./bin/op-node \
-  --network="$OP_NODE_NETWORK" \
+  --network=$OP_NODE_NETWORK \
   --l1=$OP_NODE_L1_ETH_RPC \
   --l1.rpckind=$OP_NODE_L1_RPC_KIND \
   --l1.beacon=$OP_NODE_L1_BEACON \
