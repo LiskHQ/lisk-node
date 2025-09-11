@@ -76,6 +76,12 @@ cd lisk-node
 
 ### Source
 
+Please use the following client versions:
+
+- **op-node**: [v1.13.6](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.13.6)
+- **op-geth**: [v1.101602.0](https://github.com/ethereum-optimism/op-geth/releases/tag/v1.101602.0)
+- **op:reth**: [v1.7.0](https://github.com/paradigmxyz/reth/releases/tag/v1.7.0)
+
 #### Build
 
 - Before proceeding, please make sure to install the following dependency (**this information is missing in the OP documentations linked below**):

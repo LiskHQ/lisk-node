@@ -1,5 +1,5 @@
 ARG GOLANG_VERSION=1.24
-ARG RUST_VERSION=1.86
+ARG RUST_VERSION=1.88
 ARG UBUNTU_VERSION=25.04
 
 FROM golang:$GOLANG_VERSION AS op
@@ -8,8 +8,8 @@ WORKDIR /app
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.13.5
-ENV COMMIT=7a0ab04ea2db5421da689eb77a68e674e4ae9cfe
+ENV VERSION=v1.13.6
+ENV COMMIT=d6733fd693a685ee9dfbb74b9d64aeff851e1c11
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
@@ -27,8 +27,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/paradigmxyz/reth.git
-ENV VERSION=v1.6.0
-ENV COMMIT=d8451e54e7267f9f1634118d6d279b2216f7e2bb
+ENV VERSION=v1.7.0
+ENV COMMIT=9d56da53ec0ad60e229456a0c70b338501d923a5
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
