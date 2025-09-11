@@ -1,5 +1,5 @@
 ARG GOLANG_VERSION=1.24
-ARG RUST_VERSION=1.86
+ARG RUST_VERSION=1.88
 ARG UBUNTU_VERSION=25.04
 
 FROM golang:$GOLANG_VERSION AS op
@@ -27,8 +27,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/paradigmxyz/reth.git
-ENV VERSION=v1.6.0
-ENV COMMIT=d8451e54e7267f9f1634118d6d279b2216f7e2bb
+ENV VERSION=v1.7.0
+ENV COMMIT=9d56da53ec0ad60e229456a0c70b338501d923a5
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
