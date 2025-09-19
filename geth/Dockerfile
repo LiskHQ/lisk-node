@@ -21,8 +21,8 @@ FROM golang:$GOLANG_VERSION AS geth
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/op-geth.git
-ENV VERSION=v1.101602.0
-ENV COMMIT=0c62eff49efa07af470d6822d6c377a5fec6da7b
+ENV VERSION=v1.101602.3
+ENV COMMIT=b51c72ebea9dcf14e6859b14e4bd92c484714f08
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
