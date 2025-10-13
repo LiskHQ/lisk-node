@@ -30,7 +30,7 @@ fi
 
 # Snapshot base URLs
 readonly SNAPSHOT_BASE_URL_DEFAULT="https://snapshots.lisk.com"
-readonly SNAPSHOT_BASE_URL_ALTERNATE="https://s3.fr-par.scw.cloud/snapshots.lisk.com/"
+readonly SNAPSHOT_BASE_URL_ALTERNATE="https://s3.fr-par.scw.cloud/snapshots.lisk.com"
 
 # Automatically resolve SNAPSHOT_URL, if not specified
 SNAPSHOT_URL="$SNAPSHOT_URL"
