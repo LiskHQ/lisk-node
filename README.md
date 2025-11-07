@@ -80,7 +80,7 @@ Please use the following client versions:
 
 - **op-node**: [v1.14.3](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.14.3)
 - **op-geth**: [v1.101603.2](https://github.com/ethereum-optimism/op-geth/releases/tag/v1.101603.2)
-- **op-reth**: [v1.8.3](https://github.com/paradigmxyz/reth/releases/tag/v1.8.3)
+- **op-reth**: [v1.8.4](https://github.com/paradigmxyz/reth/releases/tag/v1.8.4)
 
 #### Build
 
