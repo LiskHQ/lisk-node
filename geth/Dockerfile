@@ -7,8 +7,8 @@ WORKDIR /app
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.16.1
-ENV COMMIT=94706ec5072b13030600d1b45ae10b673b660c0d
+ENV VERSION=v1.16.2
+ENV COMMIT=1b8c541060f0d323a7023fbc68fbbc8daf674340
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
@@ -21,8 +21,8 @@ FROM golang:$GOLANG_VERSION AS geth
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/op-geth.git
-ENV VERSION=v1.101603.4
-ENV COMMIT=aa940538653c59df97b432bc24a2a4e4b17a06a8
+ENV VERSION=v1.101603.5
+ENV COMMIT=904a088c5cc1eeec21a1ffa47327dc20a809e642
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
