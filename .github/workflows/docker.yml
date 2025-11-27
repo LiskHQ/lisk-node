@@ -1,67 +1,96 @@
 name: Publish Docker Images
 
+# Trigger this workflow only on pushes to the main branch
 on:
   push:
     branches:
       - main
 
+# Define global environment variables for the entire workflow
 env:
+  # Platforms for multi-arch Docker builds (e.g., linux/amd64, linux/arm64)
   DOCKER_BUILD_PLATFORMS: linux/amd64
+  # RETH features to enable during compilation (e.g., performance optimizations)
   RETH_FEATURES: jemalloc,asm-keccak
+  # Build profile for RETH (e.g., maxperf for high optimization)
   RETH_BUILD_PROFILE: maxperf
 
 jobs:
-  docker_prep:
-    name: Build and push docker image
+  build_and_deploy:
+    name: Build and Deploy Docker Image
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name }}
+    
+    # Explicitly target a production environment for better tracing and rules management.
+    environment: production 
+    
+    # Strategy matrix to build separate images for different networks (Mainnet and Sepolia)
     strategy:
       matrix:
         network: [mainnet, sepolia]
+        
     steps:
-      - name: Checkout
+      # 1. Checkout the repository code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
+      # 2. Configure AWS Credentials using the official action
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # 3. Login to Amazon ECR to authenticate Docker client
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
+        uses: aws-actions/amazon-ecr-login@v2
 
+      # 4. Set up Docker Buildx for multi-platform builds
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker image
-        id: docker-image
+      # 5. Determine the ECR Repository path dynamically based on the network matrix value
+      # This step calculates the repository name and exports it as an output variable.
+      - name: Calculate Repository Image Tag
+        id: calculate-repo
         run: |
-          if [ "${{ matrix.network }}" = "mainnet" ];
-          then
-            echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}" >> $GITHUB_OUTPUT
+          # Use a variable for the base repository for clarity
+          REPO_BASE="${{ steps.login-ecr.outputs.registry }}"
+          
+          # Conditionally select the correct repository secret
+          if [ "${{ matrix.network }}" == "mainnet" ]; then
+            IMAGE_TAG="${REPO_BASE}/${{ secrets.ECR_REPOSITORY }}"
           else
-            echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_SEPOLIA }}" >> $GITHUB_OUTPUT
+            IMAGE_TAG="${REPO_BASE}/${{ secrets.ECR_REPOSITORY_SEPOLIA }}"
           fi
+          
+          # Export the full image path for use in subsequent steps
+          echo "image=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+        shell: bash # Explicitly specify bash for better script compatibility
 
-      - name: Apply Lisk Sepolia hotfix
-        id: apply-sepolia-hotfix
+      # 6. Apply Lisk Sepolia hotfix patch if the network is Sepolia
+      - name: Apply Lisk Sepolia Hotfix Patch
         if: ${{ matrix.network == 'sepolia' }}
         run: git apply ./dockerfile-lisk-sepolia.patch
-
-      - name: Build and push image
+        shell: bash
+        
+      # 7. Build and push the image to ECR
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
-        id: docker-build
         with:
           context: .
           file: reth/Dockerfile
+          # Pass environment variables to the Docker build process
           build-args: |
             FEATURES=${{ env.RETH_FEATURES }}
             RETH_BUILD_PROFILE=${{ env.RETH_BUILD_PROFILE }}
           platforms: ${{ env.DOCKER_BUILD_PLATFORMS }}
           push: true
+          # Define the tags for the image:
           tags: |
-            ${{ steps.docker-image.outputs.image }}:latest
-            ${{ steps.docker-image.outputs.image }}:${{ github.sha }}
+            ${{ steps.calculate-repo.outputs.image }}:latest-${{ matrix.network }} # Network-specific 'latest' tag
+            ${{ steps.calculate-repo.outputs.image }}:${{ github.sha }}            # Immutable tag using full Git SHA
+            ${{ steps.calculate-repo.outputs.image }}:${{ github.sha }}-${{ matrix.network }} # Network-specific SHA tag
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
