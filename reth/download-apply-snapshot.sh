@@ -98,10 +98,16 @@ download_and_verify(){
 }
 for i in $(seq 1 $SNAPSHOT_DOWNLOAD_MAX_TRIES); do download_and_verify && returncode=0 && break || returncode=$? && sleep 10; done; (exit $returncode)
 
-# Extract the datadir snapshot
+# Extract the datadir snapshot. Dispatch by extension: tar auto-detects
+# gzip from magic bytes (no -z needed) but not lz4. The sepolia bucket
+# serves .tar.lz4 (mirrored from Gelato); mainnet serves .tar.gz.
 echoBanner "Importing snapshot..."
 echo "Extracting reth data directory snapshot to ${RETH_DATA_DIR}..."
-tar --directory $RETH_DATA_DIR -xf $SNAPSHOT_DIR/$SNAPSHOT_REMOTE_FILENAME
+case "$SNAPSHOT_REMOTE_FILENAME" in
+  *.tar.lz4)      tar --directory "$RETH_DATA_DIR" -I lz4 -xf "$SNAPSHOT_DIR/$SNAPSHOT_REMOTE_FILENAME" ;;
+  *.tar.gz|*.tar) tar --directory "$RETH_DATA_DIR" -xf "$SNAPSHOT_DIR/$SNAPSHOT_REMOTE_FILENAME" ;;
+  *)              echo "Error: unsupported snapshot format: $SNAPSHOT_REMOTE_FILENAME" >&2; exit 16 ;;
+esac
 readonly SNAPSHOT_IMPORT_EXIT_CODE=$?
 
 echo -e "\nRemoving the temporary snapshot download directory: '${SNAPSHOT_DIR}'"

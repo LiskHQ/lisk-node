@@ -42,7 +42,7 @@ FROM ubuntu:$UBUNTU_VERSION
 ARG PROFILE=maxperf
 
 RUN apt-get update && \
-    apt-get install -y jq curl supervisor && \
+    apt-get install -y jq curl lz4 supervisor && \
     rm -rf /var/lib/apt/lists
 RUN mkdir -p /var/log/supervisor
 
