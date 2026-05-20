@@ -78,9 +78,9 @@ cd lisk-node
 
 Please use the following client versions:
 
-- **op-node**: [v1.18.0](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.18.0)
+- **op-node**: [v1.18.2](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.18.2)
 - **op-geth**: [v1.101702.2](https://github.com/ethereum-optimism/op-geth/releases/tag/v1.101702.2)
-- **op-reth**: [v2.2.2](https://github.com/ethereum-optimism/optimism/releases/tag/op-reth/v2.2.2)
+- **op-reth**: [v2.2.3](https://github.com/ethereum-optimism/optimism/releases/tag/op-reth/v2.2.3)
 
 #### Build
 
