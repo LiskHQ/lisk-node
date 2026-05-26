@@ -67,8 +67,17 @@ fi
 
 readonly SNAPSHOT_DIR=./snapshot
 readonly SNAPSHOT_REMOTE_FILENAME=$(basename ${SNAPSHOT_URL})
-readonly SNAPSHOT_SHA256_URL="${SNAPSHOT_URL}.SHA256"
-readonly SNAPSHOT_SHA256_FILENAME="${SNAPSHOT_REMOTE_FILENAME}.SHA256"
+
+# Probe the checksum file; buckets may publish either .SHA256 or .sha256.
+# Prefer uppercase; fall back to lowercase.
+sha256_http_code=$(curl -o /dev/null --silent -Iw '%{http_code}' "${SNAPSHOT_URL}.SHA256")
+if [[ "$sha256_http_code" == "200" ]]; then
+  readonly SNAPSHOT_SHA256_URL="${SNAPSHOT_URL}.SHA256"
+  readonly SNAPSHOT_SHA256_FILENAME="${SNAPSHOT_REMOTE_FILENAME}.SHA256"
+else
+  readonly SNAPSHOT_SHA256_URL="${SNAPSHOT_URL}.sha256"
+  readonly SNAPSHOT_SHA256_FILENAME="${SNAPSHOT_REMOTE_FILENAME}.sha256"
+fi
 readonly SNAPSHOT_DOWNLOAD_MAX_TRIES=3
 
 # Clear any existing snapshots
