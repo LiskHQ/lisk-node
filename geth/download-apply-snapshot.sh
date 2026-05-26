@@ -67,8 +67,24 @@ fi
 
 readonly SNAPSHOT_DIR=./snapshot
 readonly SNAPSHOT_REMOTE_FILENAME=$(basename ${SNAPSHOT_URL})
-readonly SNAPSHOT_SHA256_URL="${SNAPSHOT_URL}.SHA256"
-readonly SNAPSHOT_SHA256_FILENAME="${SNAPSHOT_REMOTE_FILENAME}.SHA256"
+
+# Probe the checksum file; buckets may publish either .SHA256 or .sha256.
+# Prefer uppercase; fall back to lowercase; fail fast if neither exists so we
+# don't burn a snapshot download we can't verify.
+sha256_upper_http_code=$(curl -o /dev/null --silent --location -Iw '%{http_code}' "${SNAPSHOT_URL}.SHA256")
+if [[ "$sha256_upper_http_code" == "200" ]]; then
+  readonly SNAPSHOT_SHA256_URL="${SNAPSHOT_URL}.SHA256"
+  readonly SNAPSHOT_SHA256_FILENAME="${SNAPSHOT_REMOTE_FILENAME}.SHA256"
+else
+  sha256_lower_http_code=$(curl -o /dev/null --silent --location -Iw '%{http_code}' "${SNAPSHOT_URL}.sha256")
+  if [[ "$sha256_lower_http_code" == "200" ]]; then
+    readonly SNAPSHOT_SHA256_URL="${SNAPSHOT_URL}.sha256"
+    readonly SNAPSHOT_SHA256_FILENAME="${SNAPSHOT_REMOTE_FILENAME}.sha256"
+  else
+    echo "Error: Checksum file not found (${SNAPSHOT_URL}.SHA256 or .sha256)."
+    exit 13
+  fi
+fi
 readonly SNAPSHOT_DOWNLOAD_MAX_TRIES=3
 
 # Clear any existing snapshots

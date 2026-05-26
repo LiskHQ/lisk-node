@@ -13,6 +13,7 @@ WS_PORT="${WS_PORT:-8546}"
 AUTHRPC_PORT="${AUTHRPC_PORT:-8551}"
 METRICS_PORT="${METRICS_PORT:-6060}"
 P2P_PORT="${P2P_PORT:-30303}"
+ADDITIONAL_ARGS=""
 
 # Ensure data directory exists
 mkdir -p $RETH_DATA_DIR
@@ -22,6 +23,14 @@ mkdir -p $RETH_DATA_DIR
 
 # Set the start flags
 echo "$OP_NODE_L2_ENGINE_AUTH_RAW" > "$OP_NODE_L2_ENGINE_AUTH"
+
+if [ "${OP_RETH_BOOTNODES+x}" = x ]; then
+    # Bootnodes seed the discovery protocol, so discovery must remain enabled
+    # for them to take effect.
+    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --bootnodes=$OP_RETH_BOOTNODES"
+else
+    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --disable-discovery"
+fi
 
 # Start service
 echoBanner "Starting op-reth execution node under '${RETH_DATA_DIR}'..."
@@ -44,7 +53,7 @@ exec ./op-reth node \
     --http.port="$RPC_PORT" \
     --http.api=web3,debug,eth,net,txpool \
     --metrics=0.0.0.0:"$METRICS_PORT" \
-    --disable-discovery \
     --port="$P2P_PORT" \
     --rollup.sequencer-http=$SEQUENCER_HTTP \
-    --rollup.disable-tx-pool-gossip
+    --rollup.disable-tx-pool-gossip \
+    $ADDITIONAL_ARGS # intentionally unquoted
