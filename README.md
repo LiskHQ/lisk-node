@@ -19,7 +19,7 @@ We recommend you the following hardware configuration to run a Lisk L2 node:
 - adequate storage capacity to accommodate both the snapshot restoration process (if restoring from snapshot) and chain data, ensuring a minimum of (2 \* current_chain_size) + snapshot_size + 20%\_buffer
 - if running with docker, please install Docker Engine version [27.0.1](https://docs.docker.com/engine/release-notes/27.0/) or higher
 
-**Note:** If utilizing Amazon Elastic Block Store (EBS), ensure timing buffered disk reads are fast enough in order to avoid latency issues alongside the rate of new blocks added to Base during the initial synchronization process; `io2 block express` is recommended.
+**Note:** If utilizing Amazon Elastic Block Store (EBS), ensure timing buffered disk reads are fast enough in order to avoid latency issues alongside the rate of new blocks added to Lisk during the initial synchronization process; `io2 Block Express` is recommended.
 
 ## Supported networks
 
@@ -49,7 +49,7 @@ cd lisk-node
 
 1. We currently support running either the `op-geth` or the `op-reth` nodes alongside the `op-node`. By default, we run the `op-geth` node. If you would like to run the `op-reth` client, please set the `CLIENT` environment variable to `reth` before starting the node.
     > **Note**:
-    > - The `op-reth` client can be built in either the `maxperf` (default) or `release` profile. To learn more about them, please check reth's documentation on [Optimizations](https://github.com/paradigmxyz/reth/blob/main/book/installation/source.md#optimizations). Please set the `RETH_BUILD_PROFILE` environment variable accordingly.
+    > - The `op-reth` client can be built in either the `maxperf` (default) or `release` profile. To learn more about them, please check reth's documentation on [Optimizations](https://reth.rs/installation/source#optimizations). Please set the `RETH_BUILD_PROFILE` environment variable accordingly.
     > - Unless you are building the `op-reth` client in `release` profile, please ensure that you have a machine with 32 GB RAM.
     > - Additionally, if you have the Docker Desktop installed on your system, please make sure to set `Memory limit` to a minimum of `16 GB`.<br>It can be set under `Settings -> Resources -> Resource Allocation -> Memory limit`.
 
@@ -87,13 +87,13 @@ Please use the following client versions:
 - Before proceeding, please make sure to install the following dependency (**this information is missing in the OP documentations linked below**):
   - [jq](https://jqlang.github.io/jq/)
 
-- To build `op-node` and `op-geth` from source, follow OP documentation on [Building a Node from Source](https://docs.optimism.io/builders/node-operators/tutorials/node-from-source).
+- To build `op-node` and `op-geth` from source, follow OP documentation on [Building a Node from Source](https://docs.optimism.io/node-operators/tutorials/node-from-source).
   - Before building the `op-node`, please patch the code with [`op-node-lisk-sepolia.patch`](./op-node-lisk-sepolia.patch) for an unhandled `SystemConfig` event emitted on Lisk Sepolia, resulting in errors on the Lisk nodes.
     ```sh
     git apply <path-to-op-node-lisk-sepolia.patch>
     ```
 
-- To build `op-reth` from source, follow the official reth [documentation](https://reth.rs/run/optimism.html#installing-op-reth).
+- To build `op-reth` from source, refer to the [`op-reth` source tree](https://github.com/ethereum-optimism/optimism/tree/op-reth%2Fv2.2.5/rust/op-reth) in the `ethereum-optimism/optimism` repository (pinned to the version above).
 
 #### Set environment variables
 
@@ -105,13 +105,13 @@ export DATADIR_PATH=... # Path to the folder where the execution node (op-geth o
 
 #### Create a JWT Secret
 
-`op-geth` and `op-node` communicate over the engine API authrpc. This communication can be secured with a shared secret which can be provided to both when starting the applications. In this case, the secret takes the form of a random 32-byte hex string and can be generated with:
+The execution client (`op-geth` or `op-reth`) and `op-node` communicate over the engine API authrpc. This communication can be secured with a shared secret which can be provided to both when starting the applications. In this case, the secret takes the form of a random 32-byte hex string and can be generated with:
 
 ```
 openssl rand -hex 32 > jwt.txt
 ```
 
-For more information refer to the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/mainnet#create-a-jwt-secret).
+For more information refer to the OP [documentation](https://docs.optimism.io/node-operators/tutorials/run-node-from-source).
 
 #### Run op-geth
 
@@ -148,10 +148,10 @@ For more information refer to the OP [documentation](https://docs.optimism.io/bu
     --rollup.sequencerhttp=SEQUENCER_HTTP \
     --rollup.halt=major \
     --rollup.disabletxpoolgossip=true \
-    --nat=extip:0.0.0.0
+    --nat=extip:$HOST_IP    # optional; set HOST_IP to your external IP address and open port 30303 to improve peer connectivity
 ```
 
-Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-geth) for detailed information about available options.
+Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/node-operators/reference/op-geth-config) for detailed information about available options.
 
 #### Run op-reth
 
@@ -184,14 +184,17 @@ Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/bu
   --rollup.disable-tx-pool-gossip
 ```
 
-Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node.html#reth-node) for detailed information about available options.
+Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node) for detailed information about available options.
+
+> **Note**:
+> `--disable-discovery` and `--bootnodes` are mutually exclusive in practice — reth's bootnodes only take effect via the discovery protocol (discv4/discv5/DNS). If you want to seed peer discovery (e.g. for snap sync), drop `--disable-discovery` and pass `--bootnodes=<comma-separated enode URLs>` instead. See [Snap sync](#snap-sync) below.
 
 > **Note**:
 > <br>Official Lisk Sequencer HTTP RPC endpoints:
 > - **Lisk Sepolia**: https://rpc.sepolia-api.lisk.com
 > - **Lisk Mainnet**: https://rpc.api.lisk.com
 >
-> ⚠️ Please consider using a private endpoint to connect to the sequencer when running your own node if you encounter rate limit issues. More information is available here: [Using RPC Nodes](https://docs.gelato.network/developer-services/rpc-nodes/using-rpc-nodes).
+> ⚠️ Please consider using a private endpoint to connect to the sequencer when running your own node if you encounter rate limit issues. More information is available here: [Private RPCs](https://docs.gelato.cloud/private-rpcs/introduction).
 
 #### Run op-node
 
@@ -213,9 +216,9 @@ The above command starts `op-node` in **full sync** mode. Depending on the chain
 INFO [06-26|13:31:20.389] Advancing bq origin                      origin=17171d..1bc69b:8300332 originBehind=false
 ```
 
-For more information refer to the OP [documentation](https://docs.optimism.io/builders/node-operators/tutorials/mainnet#full-sync).
+For more information refer to the OP [documentation](https://docs.optimism.io/node-operators/tutorials/run-node-from-source).
 
-Refer to the `op-node` configuration [documentation](https://docs.optimism.io/builders/node-operators/management/configuration#op-node) for detailed information about available options.
+Refer to the `op-node` configuration [documentation](https://docs.optimism.io/node-operators/reference/op-node-config) for detailed information about available options.
 
 > **Note**:
 > <br>Some L1 nodes (e.g. Erigon) do not support fetching storage proofs. You can work around this by specifying `--l1.trustrpc` when starting op-node (add it in `op-node-entrypoint` and rebuild the docker image with `docker compose build`.) Do not do this unless you fully trust the L1 node provider.
@@ -250,11 +253,24 @@ APPLY_SNAPSHOT=true CLIENT=geth SNAPSHOT_TYPE=datadir docker compose up --build 
 APPLY_SNAPSHOT=true CLIENT=reth SNAPSHOT_TYPE=datadir docker compose up --build --detach
 ```
 
-You can also download and apply a snapshot from a custom URL by setting the `SNAPSHOT_URL` environment variable.
-Please make sure the snapshot file ends with `*.tar.gz`.
-```sh
-APPLY_SNAPSHOT=true SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build --detach
-```
+You can also download and apply a snapshot from a custom URL by setting the `SNAPSHOT_URL` environment variable. Supported formats depend on the client:
+
+- **op-geth**: only `*.tar.gz`. The script picks `datadir` vs `export` import mode from the filename — make sure the basename contains `datadir` for a datadir snapshot (e.g. `lisk-geth-datadir-<timestamp>.tar.gz`); anything else is treated as an export and imported via `geth import`.
+  ```sh
+  APPLY_SNAPSHOT=true SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build --detach
+  ```
+
+- **op-reth**: `*.tar.gz`, `*.tar`, or `*.tar.lz4`. `SNAPSHOT_TYPE=datadir` must be set explicitly.
+  ```sh
+  APPLY_SNAPSHOT=true CLIENT=reth SNAPSHOT_TYPE=datadir SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build --detach
+  ```
+
+> **Note**:
+> Alternative snapshot sources hosted by [Gelato](https://www.gelato.network/):
+> - **Lisk Mainnet**: https://lisk.snapshots.gelato.cloud/index.html
+> - **Lisk Sepolia**: https://lisk.t.snapshots.gelato.cloud/index.html
+>
+> Gelato publishes all snapshots as `.tar.lz4`, so they currently work only with `CLIENT=reth` (the docker geth flow expects `.tar.gz`). For manual `.tar.lz4` extraction, see the [Source snapshots](#source-1) section below.
 
 ### Source
 
@@ -271,6 +287,10 @@ Please follow the steps below:
   - Sepolia: https://snapshots.lisk.com/sepolia
   - Mainnet: https://snapshots.lisk.com/mainnet
 
+  Alternative snapshot sources hosted by [Gelato](https://www.gelato.network/):
+  - Sepolia: https://lisk.t.snapshots.gelato.cloud/index.html
+  - Mainnet: https://lisk.snapshots.gelato.cloud/index.html
+
 - Verify the integrity of the downloaded snapshot with:
   ```sh
   sha256sum -c <checksum-file-name>
@@ -282,10 +302,26 @@ Please follow the steps below:
     tar -xf <path-to-downloaded-export-snapshot-tarball>
     ./build/bin/geth import --datadir=$GETH_DATA_DIR <path-to-extracted-export-snapshot>
     ```
-  - `datadir`:
+  - `datadir` (`.tar.gz`):
     ```sh
     tar --directory $GETH_DATA_DIR -xf <path-to-datadir-snapshot>
     ```
+  - `datadir` (`.tar.lz4`):
+    ```sh
+    # requires `lz4` to be installed
+    tar --directory $RETH_DATA_DIR -I lz4 -xf <path-to-datadir-snapshot>
+    ```
+
+## Snap sync
+
+By default, the Lisk node runs in full sync mode. To enable snap sync (faster initial sync by fetching state from peers), uncomment the snap-sync block in your `.env.*` file:
+
+- `OP_NODE_SYNCMODE=execution-layer` — instructs `op-node` to defer block sync to the execution client.
+- `OP_GETH_SYNCMODE=snap` (op-geth only) — enables geth's snap sync.
+- `OP_GETH_BOOTNODES` / `OP_RETH_BOOTNODES` — comma-separated enode URLs used to bootstrap peer discovery. Snap sync needs P2P connectivity beyond the sequencer, so at least one working bootnode is required.
+
+> **Note**:
+> For `op-reth`, the docker entrypoint normally runs with `--disable-discovery`, which disables the discovery protocols (discv4/discv5/DNS) so the node won't automatically find peers. When `OP_RETH_BOOTNODES` is set, the entrypoint automatically drops `--disable-discovery` because reth's bootnodes only take effect via the discovery protocol — they are no-ops when discovery is turned off. If you build and run `op-reth` from source instead of via docker, remove `--disable-discovery` from your command line when passing `--bootnodes`.
 
 ## Syncing
 
@@ -304,10 +340,10 @@ $( curl -s -d '{"id":0,"jsonrpc":"2.0","method":"optimism_syncStatus"}' -H "Cont
 For developers and node operators who need to interact with the node programmatically, here are the relevant API documentation links:
 
 - `op-node`: Comprehensive JSON-RPC API documentation for the Optimism node
-  - [Official Documentation](https://docs.optimism.io/builders/node-operators/json-rpc)
+  - [Official Documentation](https://docs.optimism.io/node-operators/reference/op-node-json-rpc)
 
 - `op-geth`: API documentation for the Optimism-modified Geth client
   - [Programmatic Interface Guide](https://github.com/ethereum-optimism/op-geth?tab=readme-ov-file#programmatically-interfacing-geth-nodes)
 
 - `op-reth`: Detailed JSON-RPC documentation for the Reth client
-  - [JSON-RPC Documentation](https://reth.rs/jsonrpc/intro.html)
+  - [JSON-RPC Documentation](https://reth.rs/jsonrpc/intro)
