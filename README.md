@@ -19,7 +19,7 @@ We recommend you the following hardware configuration to run a Lisk L2 node:
 - adequate storage capacity to accommodate both the snapshot restoration process (if restoring from snapshot) and chain data, ensuring a minimum of (2 \* current_chain_size) + snapshot_size + 20%\_buffer
 - if running with docker, please install Docker Engine version [27.0.1](https://docs.docker.com/engine/release-notes/27.0/) or higher
 
-**Note:** If utilizing Amazon Elastic Block Store (EBS), ensure timing buffered disk reads are fast enough in order to avoid latency issues alongside the rate of new blocks added to Lisk during the initial synchronization process; `io2 Block Express` is recommended.
+**Note:** If utilizing Amazon Elastic Block Store (EBS), ensure timing buffered disk reads are fast enough to avoid latency issues alongside the rate of new blocks added to Lisk during the initial synchronization process; `io2 Block Express` is recommended.
 
 ## Supported networks
 
