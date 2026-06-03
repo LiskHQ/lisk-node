@@ -217,7 +217,7 @@ Please follow the steps below:
   ```
 
 - Import the snapshot:
-  - `.tar.gz`:
+  - `.tar` or `.tar.gz`:
     ```sh
     tar --directory $RETH_DATA_DIR -xf <path-to-datadir-snapshot>
     ```

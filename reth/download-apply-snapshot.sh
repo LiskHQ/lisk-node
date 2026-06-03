@@ -24,8 +24,8 @@ readonly SNAPSHOT_BASE_URL_ALTERNATE="https://s3.fr-par.scw.cloud/snapshots.lisk
 
 # Automatically resolve SNAPSHOT_URL, if not specified. When SNAPSHOT_URL is
 # given explicitly (e.g. a Gelato URL), SNAPSHOT_TYPE is irrelevant.
-SNAPSHOT_URL="$SNAPSHOT_URL"
-if [[ "${SNAPSHOT_URL-x}" == x || -z $SNAPSHOT_URL ]];
+SNAPSHOT_URL="${SNAPSHOT_URL:-}"
+if [[ -z "$SNAPSHOT_URL" ]];
 then
   if [[ "${SNAPSHOT_TYPE}" != "datadir" ]]; then
     echo "Error: auto-resolution only supports SNAPSHOT_TYPE=datadir; set SNAPSHOT_URL explicitly to use another type"
