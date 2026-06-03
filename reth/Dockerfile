@@ -8,8 +8,8 @@ WORKDIR /app
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.18.2
-ENV COMMIT=a5f807798b0896becd497d27b92afe911b088ad4
+ENV VERSION=v1.19.0
+ENV COMMIT=fffe406245952bbf9c6089bd127773e282e770f5
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
@@ -27,8 +27,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=op-reth/v2.2.5
-ENV COMMIT=0f40873d56882b54e7448fdbe931aec8b23907ff
+ENV VERSION=op-reth/v2.3.0
+ENV COMMIT=fffe406245952bbf9c6089bd127773e282e770f5
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
