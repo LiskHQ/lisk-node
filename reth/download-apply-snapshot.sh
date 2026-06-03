@@ -13,16 +13,6 @@ if [[ "$APPLY_SNAPSHOT" != "TRUE" ]]; then
   exit 0
 fi
 
-if [[ "${CLIENT}" != "reth" ]]; then
-  echo "Error: This script is only for op-reth"
-  exit 14
-fi
-
-if [[ "${SNAPSHOT_TYPE}" != "datadir" ]]; then
-  echo "Error: Only datadir snapshots are supported on op-reth; to proceed, additionally set 'SNAPSHOT_TYPE=datadir' and restart"
-  exit 15
-fi
-
 if [[ "${RETH_DATA_DIR-x}" == x ]]; then
   echo "Error: RETH_DATA_DIR is undefined"
   exit 1
@@ -32,12 +22,17 @@ fi
 readonly SNAPSHOT_BASE_URL_DEFAULT="https://snapshots.lisk.com"
 readonly SNAPSHOT_BASE_URL_ALTERNATE="https://s3.fr-par.scw.cloud/snapshots.lisk.com"
 
-# Automatically resolve SNAPSHOT_URL, if not specified
-SNAPSHOT_URL="$SNAPSHOT_URL"
-if [[ "${SNAPSHOT_URL-x}" == x || -z $SNAPSHOT_URL ]];
+# Automatically resolve SNAPSHOT_URL, if not specified. When SNAPSHOT_URL is
+# given explicitly (e.g. a Gelato URL), SNAPSHOT_TYPE is irrelevant.
+SNAPSHOT_URL="${SNAPSHOT_URL:-}"
+if [[ -z "$SNAPSHOT_URL" ]];
 then
+  if [[ "${SNAPSHOT_TYPE}" != "datadir" ]]; then
+    echo "Error: auto-resolution only supports SNAPSHOT_TYPE=datadir; set SNAPSHOT_URL explicitly to use another type"
+    exit 15
+  fi
   readonly SNAPSHOT_URL_BASE="$SNAPSHOT_BASE_URL_DEFAULT/$SNAPSHOT_NETWORK"
-  readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location $SNAPSHOT_URL_BASE/latest-${CLIENT}-${SNAPSHOT_TYPE})
+  readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location $SNAPSHOT_URL_BASE/latest-reth-${SNAPSHOT_TYPE})
   SNAPSHOT_URL="$SNAPSHOT_URL_BASE/$LATEST_SNAPSHOT_NAME"
   echo "SNAPSHOT_URL not specified; automatically resolved to $SNAPSHOT_URL"
 fi

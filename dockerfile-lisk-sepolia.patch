@@ -1,20 +1,3 @@
-diff --git a/geth/Dockerfile b/geth/Dockerfile
-index 0bc9509..8a71f8e 100644
---- a/geth/Dockerfile
-+++ b/geth/Dockerfile
-@@ -13,7 +13,11 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
-     git switch -c branch-$VERSION && \
-     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
- 
--RUN cd op-node && \
-+# Patch to handle the legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
-+# Emitted only on Lisk Sepolia from the SystemConfig contract
-+COPY op-node-lisk-sepolia.patch .
-+RUN git apply op-node-lisk-sepolia.patch && \
-+    cd op-node && \
-     make VERSION=$VERSION op-node
- 
- FROM golang:$GOLANG_VERSION AS geth
 diff --git a/reth/Dockerfile b/reth/Dockerfile
 index 12f758f..7422365 100644
 --- a/reth/Dockerfile
