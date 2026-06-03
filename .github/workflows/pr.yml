@@ -10,8 +10,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - file: geth/Dockerfile
-            features:
           - file: reth/Dockerfile
             features: jemalloc,asm-keccak
     steps:
@@ -39,8 +37,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - file: geth/Dockerfile
-            features:
           - file: reth/Dockerfile
             features: jemalloc
     steps:

@@ -3,7 +3,7 @@ services:
     platform: linux/amd64
     build:
       context: .
-      dockerfile: ${CLIENT}/Dockerfile
+      dockerfile: reth/Dockerfile
       args:
         PROFILE: ${RETH_BUILD_PROFILE:-maxperf}
     ports:
@@ -29,7 +29,7 @@ services:
     platform: linux/amd64
     build:
       context: .
-      dockerfile: ${CLIENT}/Dockerfile
+      dockerfile: reth/Dockerfile
       args:
         PROFILE: ${RETH_BUILD_PROFILE:-maxperf}
     depends_on:

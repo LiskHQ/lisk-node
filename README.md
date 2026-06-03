@@ -31,8 +31,7 @@ We recommend you the following hardware configuration to run a Lisk L2 node:
 ## Usage
 
 > **Note**:
-> - It is now possible to run the Lisk nodes with the `--op-network` flag on the op-geth execution client and the `--chain` flag on the op-reth execution client.
-> - Starting with Lisk Node [v0.3.0](https://github.com/LiskHQ/lisk-node/releases/tag/v0.3.0), we urge all users running op-reth client to update their `--chain` flag to specify the network name instead of the genesis block filepath. We've removed the genesis block and will not be maintaining it in the repository going forward.
+> Starting with Lisk Node [v0.3.0](https://github.com/LiskHQ/lisk-node/releases/tag/v0.3.0), users running op-reth should set their `--chain` flag to the network name instead of a genesis block filepath. We've removed the genesis block and will not be maintaining it in the repository going forward.
 
 ### Clone the Repository
 
@@ -47,25 +46,19 @@ cd lisk-node
 
 1. Please ensure that the environment file relevant to your network (`.env.sepolia`, or `.env.mainnet`) is set for the `env_file` properties at two places within `docker-compose.yml`. By default, it is set to `.env.mainnet`.
 
-1. We currently support running either the `op-geth` or the `op-reth` nodes alongside the `op-node`. By default, we run the `op-geth` node. If you would like to run the `op-reth` client, please set the `CLIENT` environment variable to `reth` before starting the node.
+1. The `op-reth` client can be built in either the `maxperf` (default) or `release` profile. To learn more about them, please check reth's documentation on [Optimizations](https://reth.rs/installation/source#optimizations). Set the `RETH_BUILD_PROFILE` environment variable accordingly.
     > **Note**:
-    > - The `op-reth` client can be built in either the `maxperf` (default) or `release` profile. To learn more about them, please check reth's documentation on [Optimizations](https://reth.rs/installation/source#optimizations). Please set the `RETH_BUILD_PROFILE` environment variable accordingly.
-    > - Unless you are building the `op-reth` client in `release` profile, please ensure that you have a machine with 32 GB RAM.
-    > - Additionally, if you have the Docker Desktop installed on your system, please make sure to set `Memory limit` to a minimum of `16 GB`.<br>It can be set under `Settings -> Resources -> Resource Allocation -> Memory limit`.
+    > - Unless you are building `op-reth` in `release` profile, please ensure that you have a machine with 32 GB RAM.
+    > - Additionally, if you have Docker Desktop installed on your system, please make sure to set `Memory limit` to a minimum of `16 GB`.<br>It can be set under `Settings -> Resources -> Resource Allocation -> Memory limit`.
 
 1. Run:
-    <br>**IMPORTANT**: To run the node on Lisk Sepolia, first patch the Dockerfile(s) with:
+    <br>**IMPORTANT**: To run the node on Lisk Sepolia, first patch the Dockerfile with:
     ```sh
     git apply dockerfile-lisk-sepolia.patch
     ```
 
-    <br>with `op-geth` execution client:
     ```sh
     docker compose up --build --detach
-    ```
-    or, with `op-reth` execution client:
-    ```sh
-    CLIENT=reth RETH_BUILD_PROFILE=maxperf docker compose up --build --detach
     ```
 
 1. You should now be able to `curl` your Lisk node:
@@ -79,7 +72,6 @@ cd lisk-node
 Please use the following client versions:
 
 - **op-node**: [v1.19.0](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.19.0)
-- **op-geth**: [v1.101702.2](https://github.com/ethereum-optimism/op-geth/releases/tag/v1.101702.2)
 - **op-reth**: [v2.3.0](https://github.com/ethereum-optimism/optimism/releases/tag/op-reth/v2.3.0)
 
 #### Build
@@ -87,7 +79,7 @@ Please use the following client versions:
 - Before proceeding, please make sure to install the following dependency (**this information is missing in the OP documentations linked below**):
   - [jq](https://jqlang.github.io/jq/)
 
-- To build `op-node` and `op-geth` from source, follow OP documentation on [Building a Node from Source](https://docs.optimism.io/node-operators/tutorials/node-from-source).
+- To build `op-node` from source, follow OP documentation on [Building a Node from Source](https://docs.optimism.io/node-operators/tutorials/node-from-source).
   - Before building the `op-node`, please patch the code with [`op-node-lisk-sepolia.patch`](./op-node-lisk-sepolia.patch) for an unhandled `SystemConfig` event emitted on Lisk Sepolia, resulting in errors on the Lisk nodes.
     ```sh
     git apply <path-to-op-node-lisk-sepolia.patch>
@@ -100,58 +92,18 @@ Please use the following client versions:
 Set the following environment variable:
 
 ```
-export DATADIR_PATH=... # Path to the folder where the execution node (op-geth or op-reth) data will be stored
+export DATADIR_PATH=... # Path to the folder where the op-reth data will be stored
 ```
 
 #### Create a JWT Secret
 
-The execution client (`op-geth` or `op-reth`) and `op-node` communicate over the engine API authrpc. This communication can be secured with a shared secret which can be provided to both when starting the applications. In this case, the secret takes the form of a random 32-byte hex string and can be generated with:
+`op-reth` and `op-node` communicate over the engine API authrpc. This communication can be secured with a shared secret which can be provided to both when starting the applications. In this case, the secret takes the form of a random 32-byte hex string and can be generated with:
 
 ```
 openssl rand -hex 32 > jwt.txt
 ```
 
 For more information refer to the OP [documentation](https://docs.optimism.io/node-operators/tutorials/run-node-from-source).
-
-#### Run op-geth
-
-- Set `OP_NODE_NETWORK` to `lisk-mainnet` to run the node against Lisk Mainnet or `lisk-sepolia` to run it against Lisk Sepolia.
-- Navigate to your `op-geth` directory and start service by running the command:
-
-```sh
-./build/bin/geth \
-    --op-network=$OP_NODE_NETWORK \
-    --datadir="$DATADIR_PATH" \
-    --verbosity=3 \
-    --authrpc.addr=0.0.0.0 \
-    --authrpc.port=8551 \
-    --authrpc.vhosts="*" \
-    --authrpc.jwtsecret=PATH_TO_JWT_TEXT_FILE \
-    --ws \
-    --ws.addr=0.0.0.0 \
-    --ws.port=8546 \
-    --ws.origins="*" \
-    --ws.api=web3,debug,eth,net,engine \
-    --http \
-    --http.corsdomain="*" \
-    --http.vhosts="*" \
-    --http.addr=0.0.0.0 \
-    --http.port=8545 \
-    --http.api=web3,debug,eth,net,engine \
-    --metrics \
-    --metrics.addr=0.0.0.0 \
-    --metrics.port=6060 \
-    --syncmode=full \
-    --gcmode=full \
-    --port=30303 \
-    --maxpeers=100 \
-    --rollup.sequencerhttp=SEQUENCER_HTTP \
-    --rollup.halt=major \
-    --rollup.disabletxpoolgossip=true \
-    --nat=extip:$HOST_IP    # optional; set HOST_IP to your external IP address and open port 30303 to improve peer connectivity
-```
-
-Refer to the `op-geth` configuration [documentation](https://docs.optimism.io/node-operators/reference/op-geth-config) for detailed information about available options.
 
 #### Run op-reth
 
@@ -198,7 +150,8 @@ Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node)
 
 #### Run op-node
 
-Navigate to your `op-node` directory and start service by running the command:
+- Set `OP_NODE_NETWORK` to `lisk-mainnet` to run the node against Lisk Mainnet or `lisk-sepolia` to run it against Lisk Sepolia.
+- Navigate to your `op-node` directory and start service by running the command:
 
 ```sh
 ./bin/op-node \
@@ -226,13 +179,8 @@ Refer to the `op-node` configuration [documentation](https://docs.optimism.io/no
 ## Snapshots
 
 > **Note**:
-> - Snapshots are available for both `op-geth` and `op-reth` clients:
->   - op-geth supports both export and datadir snapshots
->   - op-reth only supports datadir snapshots
-> - All snapshots are from archival nodes
-> - Snapshot types:
->   - `export`: small download size, slow to restore from, data is verified during restore (op-geth only)
->   - `datadir`: large download size, fast to restore from, no data verification during restore
+> - `op-reth` only supports datadir snapshots: large download, fast restore, no data verification.
+> - All snapshots are from archival nodes.
 
 ### Docker
 
@@ -241,49 +189,21 @@ To enable auto-snapshot download and application, set the `APPLY_SNAPSHOT` envir
 APPLY_SNAPSHOT=true docker compose up --build --detach
 ```
 
-To specify the client and snapshot type, set both the `CLIENT` and `SNAPSHOT_TYPE` environment variables:
+You can also download and apply a snapshot from a custom URL by setting the `SNAPSHOT_URL` environment variable. Supported formats are `*.tar.gz`, `*.tar`, and `*.tar.lz4`.
 ```sh
-# For op-geth with export snapshot (default)
-APPLY_SNAPSHOT=true CLIENT=geth SNAPSHOT_TYPE=export docker compose up --build --detach
-
-# For op-geth with datadir snapshot
-APPLY_SNAPSHOT=true CLIENT=geth SNAPSHOT_TYPE=datadir docker compose up --build --detach
-
-# For op-reth (only supports datadir)
-APPLY_SNAPSHOT=true CLIENT=reth SNAPSHOT_TYPE=datadir docker compose up --build --detach
+APPLY_SNAPSHOT=true SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build --detach
 ```
-
-You can also download and apply a snapshot from a custom URL by setting the `SNAPSHOT_URL` environment variable. Supported formats depend on the client:
-
-- **op-geth**: only `*.tar.gz`. The script picks `datadir` vs `export` import mode from the filename — make sure the basename contains `datadir` for a datadir snapshot (e.g. `lisk-geth-datadir-<timestamp>.tar.gz`); anything else is treated as an export and imported via `geth import`.
-  ```sh
-  APPLY_SNAPSHOT=true SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build --detach
-  ```
-
-- **op-reth**: `*.tar.gz`, `*.tar`, or `*.tar.lz4`. `SNAPSHOT_TYPE=datadir` must be set explicitly.
-  ```sh
-  APPLY_SNAPSHOT=true CLIENT=reth SNAPSHOT_TYPE=datadir SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build --detach
-  ```
 
 > **Note**:
 > Alternative snapshot sources hosted by [Gelato](https://www.gelato.network/):
 > - **Lisk Mainnet**: https://lisk.snapshots.gelato.cloud/index.html
 > - **Lisk Sepolia**: https://lisk.t.snapshots.gelato.cloud/index.html
->
-> Gelato publishes all snapshots as `.tar.lz4`, so they currently work only with `CLIENT=reth` (the docker geth flow expects `.tar.gz`). For manual `.tar.lz4` extraction, see the [Source snapshots](#source-1) section below.
 
 ### Source
 
 Please follow the steps below:
 
-- Download the snapshot and the corresponding checksum. The latest snapshot names are listed in:
-  - For op-geth:
-    - `latest-geth-export` (smaller download, slower restore with verification)
-    - `latest-geth-datadir` (larger download, faster restore without verification)
-  - For op-reth:
-    - `latest-reth-datadir` (datadir snapshot only)
-
-  Available at:
+- Download the snapshot and the corresponding checksum. The latest snapshot name is listed at `latest-reth-datadir`, available at:
   - Sepolia: https://snapshots.lisk.com/sepolia
   - Mainnet: https://snapshots.lisk.com/mainnet
 
@@ -297,16 +217,11 @@ Please follow the steps below:
   ```
 
 - Import the snapshot:
-  - `export`:
+  - `.tar.gz`:
     ```sh
-    tar -xf <path-to-downloaded-export-snapshot-tarball>
-    ./build/bin/geth import --datadir=$GETH_DATA_DIR <path-to-extracted-export-snapshot>
+    tar --directory $RETH_DATA_DIR -xf <path-to-datadir-snapshot>
     ```
-  - `datadir` (`.tar.gz`):
-    ```sh
-    tar --directory $GETH_DATA_DIR -xf <path-to-datadir-snapshot>
-    ```
-  - `datadir` (`.tar.lz4`):
+  - `.tar.lz4`:
     ```sh
     # requires `lz4` to be installed
     tar --directory $RETH_DATA_DIR -I lz4 -xf <path-to-datadir-snapshot>
@@ -317,8 +232,7 @@ Please follow the steps below:
 By default, the Lisk node runs in full sync mode. To enable snap sync (faster initial sync by fetching state from peers), uncomment the snap-sync block in your `.env.*` file:
 
 - `OP_NODE_SYNCMODE=execution-layer` — instructs `op-node` to defer block sync to the execution client.
-- `OP_GETH_SYNCMODE=snap` (op-geth only) — enables geth's snap sync.
-- `OP_GETH_BOOTNODES` / `OP_RETH_BOOTNODES` — comma-separated enode URLs used to bootstrap peer discovery. Snap sync needs P2P connectivity beyond the sequencer, so at least one working bootnode is required.
+- `OP_RETH_BOOTNODES` — comma-separated enode URLs used to bootstrap peer discovery. Snap sync needs P2P connectivity beyond the sequencer, so at least one working bootnode is required.
 
 > **Note**:
 > For `op-reth`, the docker entrypoint normally runs with `--disable-discovery`, which disables the discovery protocols (discv4/discv5/DNS) so the node won't automatically find peers. When `OP_RETH_BOOTNODES` is set, the entrypoint automatically drops `--disable-discovery` because reth's bootnodes only take effect via the discovery protocol — they are no-ops when discovery is turned off. If you build and run `op-reth` from source instead of via docker, remove `--disable-discovery` from your command line when passing `--bootnodes`.
@@ -341,9 +255,6 @@ For developers and node operators who need to interact with the node programmati
 
 - `op-node`: Comprehensive JSON-RPC API documentation for the Optimism node
   - [Official Documentation](https://docs.optimism.io/node-operators/reference/op-node-json-rpc)
-
-- `op-geth`: API documentation for the Optimism-modified Geth client
-  - [Programmatic Interface Guide](https://github.com/ethereum-optimism/op-geth?tab=readme-ov-file#programmatically-interfacing-geth-nodes)
 
 - `op-reth`: Detailed JSON-RPC documentation for the Reth client
   - [JSON-RPC Documentation](https://reth.rs/jsonrpc/intro)

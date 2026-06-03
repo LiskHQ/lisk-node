@@ -13,11 +13,6 @@ if [[ "$APPLY_SNAPSHOT" != "TRUE" ]]; then
   exit 0
 fi
 
-if [[ "${CLIENT}" != "reth" ]]; then
-  echo "Error: This script is only for op-reth"
-  exit 14
-fi
-
 if [[ "${SNAPSHOT_TYPE}" != "datadir" ]]; then
   echo "Error: Only datadir snapshots are supported on op-reth; to proceed, additionally set 'SNAPSHOT_TYPE=datadir' and restart"
   exit 15
@@ -37,7 +32,7 @@ SNAPSHOT_URL="$SNAPSHOT_URL"
 if [[ "${SNAPSHOT_URL-x}" == x || -z $SNAPSHOT_URL ]];
 then
   readonly SNAPSHOT_URL_BASE="$SNAPSHOT_BASE_URL_DEFAULT/$SNAPSHOT_NETWORK"
-  readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location $SNAPSHOT_URL_BASE/latest-${CLIENT}-${SNAPSHOT_TYPE})
+  readonly LATEST_SNAPSHOT_NAME=$(curl --silent --location $SNAPSHOT_URL_BASE/latest-reth-${SNAPSHOT_TYPE})
   SNAPSHOT_URL="$SNAPSHOT_URL_BASE/$LATEST_SNAPSHOT_NAME"
   echo "SNAPSHOT_URL not specified; automatically resolved to $SNAPSHOT_URL"
 fi
