@@ -72,7 +72,7 @@ cd lisk-node
 Please use the following client versions:
 
 - **op-node**: [v1.19.0](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.19.0)
-- **op-reth**: [v2.3.0](https://github.com/ethereum-optimism/optimism/releases/tag/op-reth/v2.3.0)
+- **op-reth**: [v2.3.1](https://github.com/ethereum-optimism/optimism/releases/tag/op-reth/v2.3.1)
 
 #### Build
 
@@ -85,7 +85,7 @@ Please use the following client versions:
     git apply <path-to-op-node-lisk-sepolia.patch>
     ```
 
-- To build `op-reth` from source, refer to the [`op-reth` source tree](https://github.com/ethereum-optimism/optimism/tree/op-reth%2Fv2.3.0/rust/op-reth) in the `ethereum-optimism/optimism` repository (pinned to the version above).
+- To build `op-reth` from source, refer to the [`op-reth` source tree](https://github.com/ethereum-optimism/optimism/tree/op-reth%2Fv2.3.1/rust/op-reth) in the `ethereum-optimism/optimism` repository (pinned to the version above).
 
 #### Set environment variables
 
