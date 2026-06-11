@@ -32,6 +32,10 @@ else
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --disable-discovery"
 fi
 
+if [ "${OP_RETH_TRUSTED_PEERS+x}" = x ]; then
+    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --trusted-peers=$OP_RETH_TRUSTED_PEERS"
+fi
+
 # Start service
 echoBanner "Starting op-reth execution node under '${RETH_DATA_DIR}'..."
 exec ./op-reth node \
