@@ -32,7 +32,7 @@ else
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --disable-discovery"
 fi
 
-if [ "${OP_RETH_TRUSTED_PEERS+x}" = x ]; then
+if [ -n "${OP_RETH_TRUSTED_PEERS:-}" ]; then
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --trusted-peers=$OP_RETH_TRUSTED_PEERS"
 fi
 
