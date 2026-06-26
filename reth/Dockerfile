@@ -8,7 +8,16 @@ WORKDIR /app
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
 RUN apt-get update && apt-get install -y jq zip && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_$(dpkg --print-architecture)" -o /usr/bin/yq && chmod +x /usr/bin/yq
+ENV YQ_VERSION=v4.44.1
+RUN ARCH=$(dpkg --print-architecture) && \
+    case "$ARCH" in \
+      amd64) YQ_SHA256=6dc2d0cd4e0caca5aeffd0d784a48263591080e4a0895abe69f3a76eb50d1ba3 ;; \
+      arm64) YQ_SHA256=8c12fcc10e14774ca6624cc282f092a526568b036fe1192258c3aecbad56d063 ;; \
+      *) echo "unsupported arch: $ARCH" >&2; exit 1 ;; \
+    esac && \
+    curl -fsSL "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_${ARCH}" -o /usr/bin/yq && \
+    echo "${YQ_SHA256}  /usr/bin/yq" | sha256sum -c - && \
+    chmod +x /usr/bin/yq
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
 ENV VERSION=v1.19.1
 ENV COMMIT=257012626a4eba436db17532b0b4e2c0dbe61bdb
