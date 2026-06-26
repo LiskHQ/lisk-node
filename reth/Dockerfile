@@ -8,6 +8,7 @@ WORKDIR /app
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
 RUN apt-get update && apt-get install -y jq zip && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_$(dpkg --print-architecture)" -o /usr/bin/yq && chmod +x /usr/bin/yq
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
 ENV VERSION=v1.19.1
 ENV COMMIT=257012626a4eba436db17532b0b4e2c0dbe61bdb
