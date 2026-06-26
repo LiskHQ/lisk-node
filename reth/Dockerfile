@@ -1,5 +1,5 @@
-ARG GOLANG_VERSION=1.24
-ARG RUST_VERSION=1.88
+ARG GOLANG_VERSION=1.26
+ARG RUST_VERSION=1.94
 ARG UBUNTU_VERSION=25.04
 
 FROM golang:$GOLANG_VERSION AS op
@@ -7,12 +7,27 @@ FROM golang:$GOLANG_VERSION AS op
 WORKDIR /app
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
+RUN apt-get update && apt-get install -y jq zip && rm -rf /var/lib/apt/lists/*
+ENV YQ_VERSION=v4.44.1
+RUN ARCH=$(dpkg --print-architecture) && \
+    case "$ARCH" in \
+      amd64) YQ_SHA256=6dc2d0cd4e0caca5aeffd0d784a48263591080e4a0895abe69f3a76eb50d1ba3 ;; \
+      arm64) YQ_SHA256=8c12fcc10e14774ca6624cc282f092a526568b036fe1192258c3aecbad56d063 ;; \
+      *) echo "unsupported arch: $ARCH" >&2; exit 1 ;; \
+    esac && \
+    curl -fsSL "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_${ARCH}" -o /usr/bin/yq && \
+    echo "${YQ_SHA256}  /usr/bin/yq" | sha256sum -c - && \
+    chmod +x /usr/bin/yq
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.19.0
-ENV COMMIT=fffe406245952bbf9c6089bd127773e282e770f5
+ENV VERSION=v1.19.1
+ENV COMMIT=257012626a4eba436db17532b0b4e2c0dbe61bdb
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
+
+# op-node embeds superchain-configs.zip, generated from the superchain-registry
+# submodule (gitignored in the source tree, so it must be built here).
+RUN just build-superchain-go
 
 RUN cd op-node && \
     make VERSION=$VERSION op-node
@@ -27,8 +42,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=op-reth/v2.3.1
-ENV COMMIT=3bccc608dc19beb9755abdcdd148bbf4ac12d12f
+ENV VERSION=op-reth/v2.3.2
+ENV COMMIT=fdca4cde225f141e61323007585ce3ae4b43248d
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
