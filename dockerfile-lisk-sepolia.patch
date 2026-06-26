@@ -2,10 +2,10 @@ diff --git a/reth/Dockerfile b/reth/Dockerfile
 index 12f758f..7422365 100644
 --- a/reth/Dockerfile
 +++ b/reth/Dockerfile
-@@ -14,7 +14,11 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
-     git switch -c branch-$VERSION && \
-     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
- 
+@@ -19,7 +19,11 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
+ # submodule (gitignored in the source tree, so it must be built here).
+ RUN just build-superchain-go
+
 -RUN cd op-node && \
 +# Patch to handle the legacy ConfigUpdate event GAS_CONFIG_ECOTONE that shouldn't be used anymore
 +# Emitted only on Lisk Sepolia from the SystemConfig contract
@@ -13,5 +13,5 @@ index 12f758f..7422365 100644
 +RUN git apply op-node-lisk-sepolia.patch && \
 +    cd op-node && \
      make VERSION=$VERSION op-node
- 
+
  FROM rust:$RUST_VERSION AS reth

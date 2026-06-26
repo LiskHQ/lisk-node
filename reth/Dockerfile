@@ -7,12 +7,17 @@ FROM golang:$GOLANG_VERSION AS op
 WORKDIR /app
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
+RUN apt-get update && apt-get install -y jq zip && rm -rf /var/lib/apt/lists/*
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
 ENV VERSION=v1.19.1
 ENV COMMIT=257012626a4eba436db17532b0b4e2c0dbe61bdb
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
+
+# op-node embeds superchain-configs.zip, generated from the superchain-registry
+# submodule (gitignored in the source tree, so it must be built here).
+RUN just build-superchain-go
 
 RUN cd op-node && \
     make VERSION=$VERSION op-node
