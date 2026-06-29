@@ -48,6 +48,10 @@ RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
+# op-reth's superchain-configs feature regenerates res/superchain-configs.tar from
+# the superchain-registry submodule at build time (the tar is gitignored upstream).
+RUN git submodule update --init --force --depth 1 -- superchain-registry
+
 WORKDIR /app/rust/op-reth
 
 RUN RUSTFLAGS="-C target-cpu=native" cargo build --bin op-reth --locked --features $FEATURES --profile $PROFILE --manifest-path bin/Cargo.toml
