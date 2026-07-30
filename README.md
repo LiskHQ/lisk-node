@@ -157,7 +157,6 @@ Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node)
 ./bin/op-node \
   --network=$OP_NODE_NETWORK \
   --l1=$OP_NODE_L1_ETH_RPC \
-  --l1.rpckind=$OP_NODE_L1_RPC_KIND \
   --l1.beacon=$OP_NODE_L1_BEACON \
   --l2=ws://localhost:8551 \
   --l2.jwt-secret=PATH_TO_JWT_TEXT_FILE
