@@ -17,7 +17,7 @@ We recommend you the following hardware configuration to run a Lisk L2 node:
 - a minimum of 16 GB RAM (32 GB recommended)
 - a locally attached NVMe SSD drive
 - adequate storage capacity to accommodate both the snapshot restoration process (if restoring from snapshot) and chain data, ensuring a minimum of (2 \* current_chain_size) + snapshot_size + 20%\_buffer
-- if running with docker, please install Docker Engine version [27.0.1](https://docs.docker.com/engine/release-notes/27.0/) or higher
+- if running with docker, please install Docker Engine version [27.0.1](https://docs.docker.com/engine/release-notes/27/) or higher
 
 **Note:** If utilizing Amazon Elastic Block Store (EBS), ensure timing buffered disk reads are fast enough to avoid latency issues alongside the rate of new blocks added to Lisk during the initial synchronization process; `io2 Block Express` is recommended.
 
@@ -232,7 +232,8 @@ Please follow the steps below:
 By default, the Lisk node runs in full sync mode. To enable snap sync (faster initial sync by fetching state from peers), uncomment the snap-sync block in your `.env.*` file:
 
 - `OP_NODE_SYNCMODE=execution-layer` — instructs `op-node` to defer block sync to the execution client.
-- `OP_RETH_BOOTNODES` — comma-separated enode URLs used to bootstrap peer discovery. Snap sync needs P2P connectivity beyond the sequencer, so at least one working bootnode is required.
+- `OP_RETH_BOOTNODES` — comma-separated enode URLs that seed `op-reth` peer discovery (`--bootnodes`; the Lisk Sepolia EL bootnode requires discv5). Snap sync needs P2P connectivity beyond the sequencer, so at least one working bootnode is required.
+- `OP_RETH_TRUSTED_PEERS` — comma-separated enode URLs added as static peers (`op-reth --trusted-peers`) and dialed directly, independent of the discovery protocol.
 
 > **Note**:
 > For `op-reth`, the docker entrypoint normally runs with `--disable-discovery`, which disables the discovery protocols (discv4/discv5/DNS) so the node won't automatically find peers. When `OP_RETH_BOOTNODES` is set, the entrypoint automatically drops `--disable-discovery` because reth's bootnodes only take effect via the discovery protocol — they are no-ops when discovery is turned off. If you build and run `op-reth` from source instead of via docker, remove `--disable-discovery` from your command line when passing `--bootnodes`.
