@@ -42,8 +42,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=op-reth/v2.4.0
-ENV COMMIT=b40d2ce097b928fe1a4ec79a8a1925eb231c675e
+ENV VERSION=op-reth/v2.4.1
+ENV COMMIT=a9a8dad3f1500a4cc2e4077edb480848bfdef29a
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
