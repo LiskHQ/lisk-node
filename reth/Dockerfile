@@ -1,5 +1,5 @@
 ARG GOLANG_VERSION=1.26
-ARG RUST_VERSION=1.94
+ARG RUST_VERSION=1.95
 ARG UBUNTU_VERSION=25.04
 
 FROM golang:$GOLANG_VERSION AS op
@@ -42,8 +42,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=op-reth/v2.4.1
-ENV COMMIT=a9a8dad3f1500a4cc2e4077edb480848bfdef29a
+ENV VERSION=op-reth/v2.4.2
+ENV COMMIT=f863ff4c12531b315d666331d43da3aeb3719388
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
