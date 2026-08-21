@@ -19,8 +19,8 @@ RUN ARCH=$(dpkg --print-architecture) && \
     echo "${YQ_SHA256}  /usr/bin/yq" | sha256sum -c - && \
     chmod +x /usr/bin/yq
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.19.4
-ENV COMMIT=a9a8dad3f1500a4cc2e4077edb480848bfdef29a
+ENV VERSION=v1.19.5
+ENV COMMIT=30f5d5836cab8ee44cf118d70831be6d0f0a9d9c
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
