@@ -20,7 +20,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
     chmod +x /usr/bin/yq
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
 ENV VERSION=v1.19.6
-ENV COMMIT=97e2f9451dbd69050b53851497166633f7c26d16
+ENV COMMIT=b60a1a6398209ccc47267e77deb6e4bf4c1ede8a
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
@@ -43,7 +43,7 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev 
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
 ENV VERSION=op-reth/v2.4.3
-ENV COMMIT=b12d74686ec752b76cd9dd50b2c41cf8f1f23cc7
+ENV COMMIT=b60a1a6398209ccc47267e77deb6e4bf4c1ede8a
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
