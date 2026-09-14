@@ -19,8 +19,8 @@ RUN ARCH=$(dpkg --print-architecture) && \
     echo "${YQ_SHA256}  /usr/bin/yq" | sha256sum -c - && \
     chmod +x /usr/bin/yq
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.19.6
-ENV COMMIT=b60a1a6398209ccc47267e77deb6e4bf4c1ede8a
+ENV VERSION=v1.19.7
+ENV COMMIT=7e167ae2e15b7bf7dfaf238e514155e4bc904ed6
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
@@ -42,8 +42,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=op-reth/v2.4.3
-ENV COMMIT=b60a1a6398209ccc47267e77deb6e4bf4c1ede8a
+ENV VERSION=op-reth/v2.4.4
+ENV COMMIT=7e167ae2e15b7bf7dfaf238e514155e4bc904ed6
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
