@@ -6,7 +6,10 @@ FROM golang:$GOLANG_VERSION AS op
 
 WORKDIR /app
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/bin
+# Matches upstream mise.toml. Pinning the tag skips the installer's unauthenticated
+# GitHub API lookup, which is rate-limited (403) on shared CI runners.
+ENV JUST_VERSION=1.46.0
+RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --tag $JUST_VERSION --to /usr/bin
 RUN apt-get update && apt-get install -y jq zip && rm -rf /var/lib/apt/lists/*
 ENV YQ_VERSION=v4.44.1
 RUN ARCH=$(dpkg --print-architecture) && \
