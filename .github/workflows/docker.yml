@@ -15,9 +15,6 @@ jobs:
     name: Build and push docker image
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
-    strategy:
-      matrix:
-        network: [mainnet, sepolia]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,18 +35,7 @@ jobs:
 
       - name: Docker image
         id: docker-image
-        run: |
-          if [ "${{ matrix.network }}" = "mainnet" ];
-          then
-            echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}" >> $GITHUB_OUTPUT
-          else
-            echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_SEPOLIA }}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Apply Lisk Sepolia hotfix
-        id: apply-sepolia-hotfix
-        if: ${{ matrix.network == 'sepolia' }}
-        run: git apply ./dockerfile-lisk-sepolia.patch
+        run: echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}" >> $GITHUB_OUTPUT
 
       - name: Build and push image
         uses: docker/build-push-action@v6
