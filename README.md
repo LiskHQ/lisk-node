@@ -218,7 +218,7 @@ Please follow the steps below:
 By default, the Lisk node runs in full sync mode. To enable snap sync (faster initial sync by fetching state from peers), uncomment the snap-sync block in `.env.mainnet`:
 
 - `OP_NODE_SYNCMODE=execution-layer` — instructs `op-node` to defer block sync to the execution client.
-- `OP_RETH_BOOTNODES` — comma-separated enode URLs that seed `op-reth` peer discovery (`--bootnodes`). Snap sync needs P2P connectivity beyond the sequencer, so at least one working bootnode is required.
+- `OP_RETH_BOOTNODES` — comma-separated enode URLs that seed `op-reth` peer discovery (`--bootnodes`). Snap sync needs P2P connectivity beyond the sequencer, so configure either a working bootnode or a reachable trusted peer.
 - `OP_RETH_TRUSTED_PEERS` — comma-separated enode URLs added as static peers (`op-reth --trusted-peers`) and dialed directly, independent of the discovery protocol.
 
 > **Note**:
