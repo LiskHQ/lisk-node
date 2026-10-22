@@ -25,8 +25,10 @@ We recommend you the following hardware configuration to run a Lisk L2 node:
 
 | Lisk Network      | Status |
 | ----------------- | ------ |
-| Sepolia (Testnet) | ✅     |
 | Mainnet           | ✅     |
+
+> **Note**:
+> Lisk Sepolia (Testnet) was decommissioned on 2026-09-01. Its final datadir snapshots (block 41,472,504) are archived at https://archive.lisk.com/L2/sepolia/.
 
 ## Usage
 
@@ -42,9 +44,7 @@ cd lisk-node
 
 ### Docker
 
-1. Ensure you have an Ethereum L1 full node RPC available (not Lisk), and set the `OP_NODE_L1_ETH_RPC` and the `OP_NODE_L1_BEACON` variables (within the `.env.*` files, if using docker-compose). If running your own L1 node, it needs to be synced before the Lisk node will be able to fully sync.
-
-1. Please ensure that the environment file relevant to your network (`.env.sepolia`, or `.env.mainnet`) is set for the `env_file` properties at two places within `docker-compose.yml`. By default, it is set to `.env.mainnet`.
+1. Ensure you have an Ethereum L1 full node RPC available (not Lisk), and set the `OP_NODE_L1_ETH_RPC` and the `OP_NODE_L1_BEACON` variables (within `.env.mainnet`, if using docker-compose). If running your own L1 node, it needs to be synced before the Lisk node will be able to fully sync.
 
 1. The `op-reth` client can be built in either the `maxperf` (default) or `release` profile. To learn more about them, please check reth's documentation on [Optimizations](https://reth.rs/installation/source#optimizations). Set the `RETH_BUILD_PROFILE` environment variable accordingly.
     > **Note**:
@@ -52,11 +52,6 @@ cd lisk-node
     > - Additionally, if you have Docker Desktop installed on your system, please make sure to set `Memory limit` to a minimum of `16 GB`.<br>It can be set under `Settings -> Resources -> Resource Allocation -> Memory limit`.
 
 1. Run:
-    <br>**IMPORTANT**: To run the node on Lisk Sepolia, first patch the Dockerfile with:
-    ```sh
-    git apply dockerfile-lisk-sepolia.patch
-    ```
-
     ```sh
     docker compose up --build --detach
     ```
@@ -80,10 +75,6 @@ Please use the following client versions:
   - [jq](https://jqlang.github.io/jq/)
 
 - To build `op-node` from source, follow OP documentation on [Building a Node from Source](https://docs.optimism.io/node-operators/tutorials/node-from-source).
-  - Before building the `op-node`, please patch the code with [`op-node-lisk-sepolia.patch`](./op-node-lisk-sepolia.patch) for an unhandled `SystemConfig` event emitted on Lisk Sepolia, resulting in errors on the Lisk nodes.
-    ```sh
-    git apply <path-to-op-node-lisk-sepolia.patch>
-    ```
 
 - To build `op-reth` from source, refer to the [`op-reth` source tree](https://github.com/ethereum-optimism/optimism/tree/op-reth%2Fv2.6.0/rust/op-reth) in the `ethereum-optimism/optimism` repository (pinned to the version above).
 
@@ -107,7 +98,7 @@ For more information refer to the OP [documentation](https://docs.optimism.io/no
 
 #### Run op-reth
 
-- Set `RETH_CHAIN` to `lisk` to run the node against Lisk Mainnet or `lisk-sepolia` to run it against Lisk Sepolia.
+- Set `RETH_CHAIN` to `lisk` to run the node against Lisk Mainnet.
 - Navigate to your `reth` directory and start service by running the command:
 
 ```sh
@@ -142,15 +133,14 @@ Refer to the `reth` configuration [documentation](https://reth.rs/cli/reth/node)
 > `--disable-discovery` and `--bootnodes` are mutually exclusive in practice — reth's bootnodes only take effect via the discovery protocol (discv4/discv5/DNS). If you want to seed peer discovery (e.g. for snap sync), drop `--disable-discovery` and pass `--bootnodes=<comma-separated enode URLs>` instead. See [Snap sync](#snap-sync) below.
 
 > **Note**:
-> <br>Official Lisk Sequencer HTTP RPC endpoints:
-> - **Lisk Sepolia**: https://rpc.sepolia-api.lisk.com
+> <br>Official Lisk Sequencer HTTP RPC endpoint:
 > - **Lisk Mainnet**: https://rpc.api.lisk.com
 >
 > ⚠️ Please consider using a private endpoint to connect to the sequencer when running your own node if you encounter rate limit issues. More information is available here: [Private RPCs](https://docs.gelato.cloud/private-rpcs/introduction).
 
 #### Run op-node
 
-- Set `OP_NODE_NETWORK` to `lisk-mainnet` to run the node against Lisk Mainnet or `lisk-sepolia` to run it against Lisk Sepolia.
+- Set `OP_NODE_NETWORK` to `lisk-mainnet` to run the node against Lisk Mainnet.
 - Navigate to your `op-node` directory and start service by running the command:
 
 ```sh
@@ -196,18 +186,15 @@ APPLY_SNAPSHOT=true SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build
 > **Note**:
 > Alternative snapshot sources hosted by [Gelato](https://www.gelato.network/):
 > - **Lisk Mainnet**: https://lisk.snapshots.gelato.cloud/index.html
-> - **Lisk Sepolia**: https://lisk.t.snapshots.gelato.cloud/index.html
 
 ### Source
 
 Please follow the steps below:
 
 - Download the snapshot and the corresponding checksum. The latest snapshot name is listed at `latest-reth-datadir`, available at:
-  - Sepolia: https://snapshots.lisk.com/sepolia
   - Mainnet: https://snapshots.lisk.com/mainnet
 
   Alternative snapshot sources hosted by [Gelato](https://www.gelato.network/):
-  - Sepolia: https://lisk.t.snapshots.gelato.cloud/index.html
   - Mainnet: https://lisk.snapshots.gelato.cloud/index.html
 
 - Verify the integrity of the downloaded snapshot with:
@@ -228,10 +215,10 @@ Please follow the steps below:
 
 ## Snap sync
 
-By default, the Lisk node runs in full sync mode. To enable snap sync (faster initial sync by fetching state from peers), uncomment the snap-sync block in your `.env.*` file:
+By default, the Lisk node runs in full sync mode. To enable snap sync (faster initial sync by fetching state from peers), uncomment the snap-sync block in `.env.mainnet`:
 
 - `OP_NODE_SYNCMODE=execution-layer` — instructs `op-node` to defer block sync to the execution client.
-- `OP_RETH_BOOTNODES` — comma-separated enode URLs that seed `op-reth` peer discovery (`--bootnodes`; the Lisk Sepolia EL bootnode requires discv5). Snap sync needs P2P connectivity beyond the sequencer, so at least one working bootnode is required.
+- `OP_RETH_BOOTNODES` — comma-separated enode URLs that seed `op-reth` peer discovery (`--bootnodes`). Snap sync needs P2P connectivity beyond the sequencer, so at least one working bootnode is required.
 - `OP_RETH_TRUSTED_PEERS` — comma-separated enode URLs added as static peers (`op-reth --trusted-peers`) and dialed directly, independent of the discovery protocol.
 
 > **Note**:

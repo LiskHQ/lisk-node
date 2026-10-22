@@ -110,8 +110,7 @@ download_and_verify(){
 for i in $(seq 1 $SNAPSHOT_DOWNLOAD_MAX_TRIES); do download_and_verify && returncode=0 && break || returncode=$? && sleep 10; done; (exit $returncode)
 
 # Extract the datadir snapshot. Dispatch by extension: tar auto-detects
-# gzip from magic bytes (no -z needed) but not lz4. The sepolia bucket
-# serves .tar.lz4 (mirrored from Gelato); mainnet serves .tar.gz.
+# gzip from magic bytes (no -z needed) but not lz4, which Gelato serves.
 echoBanner "Importing snapshot..."
 echo "Extracting reth data directory snapshot to ${RETH_DATA_DIR}..."
 case "$SNAPSHOT_REMOTE_FILENAME" in
