@@ -8,6 +8,12 @@ FROM golang:$GOLANG_VERSION AS op
 
 WORKDIR /app
 
+# Log builder details to make CI-only image build failures easier to reproduce
+# from the job log (architecture, toolchain and runner differences).
+RUN echo "build-info: uid=$(id -u) user=$(id -un) host=$(hostname)" && \
+    uname -a && \
+    (env | grep -viE 'token|secret|passw|credential|key' | sort || true)
+
 # Matches upstream mise.toml. Pinning the tag skips the installer's unauthenticated
 # GitHub API lookup, which is rate-limited (403) on shared CI runners.
 ENV JUST_VERSION=1.46.0
