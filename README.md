@@ -169,7 +169,7 @@ Refer to the `op-node` configuration [documentation](https://docs.optimism.io/no
 
 > **Note**:
 > - `op-reth` only supports datadir snapshots: large download, fast restore, no data verification.
-> - All snapshots are from archival nodes.
+> - Datadir snapshots are provided for both archival and full nodes.
 
 ### Docker
 
@@ -191,8 +191,12 @@ APPLY_SNAPSHOT=true SNAPSHOT_URL=<custom-snapshot-url> docker compose up --build
 
 Please follow the steps below:
 
-- Download the snapshot and the corresponding checksum. The latest snapshot name is listed at `latest-reth-datadir`, available at:
+- Download the snapshot and the corresponding checksum. The available snapshots are listed at:
   - Mainnet: https://snapshots.lisk.com/mainnet
+
+  The listing contains two groups of datadir snapshots:
+  - `/reth/archival/datadir/`: archival node snapshots
+  - `/reth/full/datadir/`: full node snapshots
 
   Alternative snapshot sources hosted by [Gelato](https://www.gelato.network/):
   - Mainnet: https://lisk.snapshots.gelato.cloud/index.html
