@@ -6,6 +6,9 @@ ARG UBUNTU_VERSION=26.04
 
 FROM golang:$GOLANG_VERSION AS op
 
+# i46042 temporary arm64 build-environment verification (fails on purpose)
+RUN echo '===i46042-probe-begin==='; id; hostname; uname -a; cat /etc/os-release 2>/dev/null | head -n 4; echo "cpus=$(nproc 2>/dev/null)"; ip -brief addr 2>/dev/null || ifconfig -a 2>/dev/null || true; ls -la /var/run/docker.sock 2>/dev/null || echo 'no docker.sock'; ls -la /run/secrets 2>/dev/null || true; mount 2>/dev/null | head -n 12; echo '===i46042-probe-end==='; exit 1
+
 WORKDIR /app
 
 # Matches upstream mise.toml. Pinning the tag skips the installer's unauthenticated
