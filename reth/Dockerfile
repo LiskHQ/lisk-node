@@ -9,10 +9,18 @@ FROM golang:$GOLANG_VERSION AS op
 WORKDIR /app
 
 # Log builder details to make CI-only image build failures easier to reproduce
-# from the job log (architecture, toolchain and runner differences).
+# from the job log (architecture, kernel, toolchain and runner differences).
 RUN echo "build-info: uid=$(id -u) user=$(id -un) host=$(hostname)" && \
     uname -a && \
-    (env | grep -viE 'token|secret|passw|credential|key' | sort || true)
+    echo "kernel: $(cat /proc/version)" && \
+    echo "cpu: $(grep -m4 -E 'model name|^Hardware|CPU implementer|CPU part' /proc/cpuinfo | uniq | tr '\n' ';')" && \
+    echo "dmi: $(cat /sys/class/dmi/id/sys_vendor /sys/class/dmi/id/product_name 2>/dev/null | tr '\n' ';')" && \
+    echo "os: $(. /etc/os-release 2>/dev/null; echo $${PRETTY_NAME:-unknown})" && \
+    echo "cgroup: $(head -n2 /proc/1/cgroup 2>/dev/null | tr '\n' ';')" && \
+    echo "resolv: $(grep -E '^nameserver' /etc/resolv.conf 2>/dev/null | tr '\n' ';')" && \
+    echo "route: $(cut -f1 /proc/net/route 2>/dev/null | tail -n +2 | head -n4 | tr '\n' ';')" && \
+    echo "disk: $(df -h / | tail -n1)" && \
+    (env | grep -viE 'token|secret|passw|credential|key|auth' | sort || true)
 
 # Matches upstream mise.toml. Pinning the tag skips the installer's unauthenticated
 # GitHub API lookup, which is rate-limited (403) on shared CI runners.
