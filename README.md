@@ -66,8 +66,8 @@ cd lisk-node
 
 Please use the following client versions:
 
-- **op-node**: [v1.19.11](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.19.11)
-- **op-reth**: [v2.6.1](https://github.com/ethereum-optimism/optimism/releases/tag/op-reth/v2.6.1)
+- **op-node**: [v1.20.0](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.20.0)
+- **op-reth**: [v2.8.0](https://github.com/ethereum-optimism/optimism/releases/tag/op-reth/v2.8.0)
 
 #### Build
 
@@ -76,7 +76,7 @@ Please use the following client versions:
 
 - To build `op-node` from source, follow OP documentation on [Building a Node from Source](https://docs.optimism.io/node-operators/tutorials/node-from-source).
 
-- To build `op-reth` from source, refer to the [`op-reth` source tree](https://github.com/ethereum-optimism/optimism/tree/op-reth%2Fv2.6.1/rust/op-reth) in the `ethereum-optimism/optimism` repository (pinned to the version above).
+- To build `op-reth` from source, refer to the [`op-reth` source tree](https://github.com/ethereum-optimism/optimism/tree/op-reth%2Fv2.8.0/rust/op-reth) in the `ethereum-optimism/optimism` repository (pinned to the version above).
 
 #### Set environment variables
 
