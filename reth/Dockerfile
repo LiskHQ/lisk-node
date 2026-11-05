@@ -1,7 +1,7 @@
 # Matches go.mod's toolchain directive, which the golang image ignores (GOTOOLCHAIN=local).
 # A patch pin stops a stale cached golang:1.26 from building op-node without its security fixes.
 ARG GOLANG_VERSION=1.26.10
-ARG RUST_VERSION=1.95
+ARG RUST_VERSION=1.99
 ARG UBUNTU_VERSION=26.04
 
 FROM golang:$GOLANG_VERSION AS op
@@ -24,8 +24,8 @@ RUN ARCH=$(dpkg --print-architecture) && \
     echo "${YQ_SHA256}  /usr/bin/yq" | sha256sum -c - && \
     chmod +x /usr/bin/yq
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.20.0
-ENV COMMIT=d6620202d4e563957830e688007a0cab29bd80f3
+ENV VERSION=v1.20.1
+ENV COMMIT=f73158e5e2437f879801cdc21c63a2baccdc28e7
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
@@ -47,8 +47,8 @@ WORKDIR /app
 RUN apt-get update && apt-get -y upgrade && apt-get install -y git libclang-dev pkg-config curl build-essential
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=op-reth/v2.8.0
-ENV COMMIT=d6620202d4e563957830e688007a0cab29bd80f3
+ENV VERSION=op-reth/v2.8.1
+ENV COMMIT=722072949ce583f361424a160082186ee14cac71
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
